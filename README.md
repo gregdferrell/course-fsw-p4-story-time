@@ -8,6 +8,7 @@ I've used this project to further my learning with the following technologies: P
 # Getting Started
 ### Dependencies
 * Python 3.6.2
+* pytest==3.3.1
 * flask==0.12.2
 * httplib2==0.10.3
 * oauth2client==4.1.2

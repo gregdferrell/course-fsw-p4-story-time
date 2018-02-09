@@ -38,15 +38,21 @@ try:
                       active=True, user_id=user_gf_id,
                       categories=[cat_funny, cat_animal])
     story_zoo_id = story_service.create_story(story_zoo)
-    story_fresh = Story(title='Fresh Prince Story', description='A tune from the prince himself.!',
+    story_fresh = Story(title='Fresh Prince', description='A tune from the prince himself.!',
                         story_text='Now, this is a story all about how my life got flip-turned upside down ...',
                         active=True, user_id=user_gf_id, categories=[cat_funny, cat_musical])
     story_fresh_id = story_service.create_story(story_fresh)
+    story_wolf = Story(title='The Big Bad Wolf', description='A story about a scary wolf in the woods.!',
+                       story_text='One day, a few children were playing near the woods ...',
+                       active=True, user_id=user_gf_id, categories=[cat_scary])
+    story_wolf_id = story_service.create_story(story_wolf)
 
     num_rows_created = db_session.query(Story).count()
     print('Created {} stories'.format(num_rows_created))
 
     db_session.commit()
+
+
 except Exception as exc:
     print('Error creating test data:')
     print(exc)

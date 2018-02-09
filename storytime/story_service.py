@@ -4,20 +4,20 @@ from storytime.storytime_db_init import Category, Story, User, db_session
 
 
 # User functions
-def create_user(user):
+def create_user(user: User):
     db_session.add(user)
     db_session.commit()
     return user.id
 
 
-def get_user_info(user_id):
+def get_user_info(user_id: int):
     try:
         return db_session.query(User).filter_by(id=user_id).one()
     except NoResultFound:
         return None
 
 
-def get_user_id_by_email(email):
+def get_user_id_by_email(email: str):
     try:
         user = db_session.query(User).filter_by(email=email).one()
         return user.id
@@ -25,7 +25,7 @@ def get_user_id_by_email(email):
         return None
 
 
-def get_user_by_email(email):
+def get_user_by_email(email: str):
     try:
         return db_session.query(User).filter_by(email=email).one()
     except NoResultFound:
@@ -33,19 +33,19 @@ def get_user_by_email(email):
 
 
 # Story functions
-def create_story(story):
+def create_story(story: Story):
     db_session.add(story)
     db_session.commit()
     return story.id
 
 
-def update_story(story):
+def update_story(story: Story):
     db_session.add(story)
     db_session.commit()
     return
 
 
-def deactivate_story(story_id):
+def deactivate_story(story_id: int):
     story = db_session.query(Story).filter_by(id=story_id).one()
     story.active = False
     db_session.add(story)
@@ -57,16 +57,15 @@ def get_stories():
     return db_session.query(Story).filter_by(active=True)
 
 
-# TODO
-def get_stories_by_category(category):
-    pass
+def get_stories_by_category_id(category_id: int):
+    return db_session.query(Story).filter(Story.categories.any(Category.id == category_id))
 
 
-def get_stories_by_user_id(user_id):
+def get_stories_by_user_id(user_id: int):
     return db_session.query(Story).filter_by(active=True, user_id=user_id)
 
 
-def get_story_by_id(story_id):
+def get_story_by_id(story_id: int):
     try:
         return db_session.query(Story).filter_by(id=story_id).one()
     except NoResultFound:
@@ -74,14 +73,21 @@ def get_story_by_id(story_id):
 
 
 # Category functions
-def create_category(category):
+def create_category(category: Category):
     db_session.add(category)
     db_session.commit()
     return category.id
 
 
-def get_category_by_id(category_id):
+def get_category_by_id(category_id: int):
     try:
         return db_session.query(Category).filter_by(id=category_id).one()
+    except NoResultFound:
+        return None
+
+
+def get_category_by_label(category_label: str):
+    try:
+        return db_session.query(Category).filter_by(label=category_label).one()
     except NoResultFound:
         return None

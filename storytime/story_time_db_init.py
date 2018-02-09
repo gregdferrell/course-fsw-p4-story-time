@@ -1,7 +1,12 @@
+#
+# Story Time App
+# Exposes core SQL Alchemy & DB objects to the rest of the app
+#
+
 import configparser
 import os
 
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text, create_engine, func, text
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text, create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.types import DateTime
@@ -9,8 +14,10 @@ from sqlalchemy.types import DateTime
 Base = declarative_base()
 
 
-# Table: sec_user
 class User(Base):
+    """
+    User is a Python SQL Alchemy representation of the sec_user DB table.
+    """
     __tablename__ = 'sec_user'
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
@@ -18,15 +25,17 @@ class User(Base):
     active = Column(Boolean, nullable=False)
 
 
-# Table: story
 class Story(Base):
+    """
+    Story is a Python SQL Alchemy representation of the story DB table.
+    """
     __tablename__ = 'story'
     id = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
     description = Column(Text, nullable=False)
     story_text = Column(Text, nullable=False)
     active = Column(Boolean, nullable=False)
-    # TODO Not sure why the server_default is needed to make the DEFAULT at the column definition level work
+    # TODO: Not sure why the server_default is needed to make the DEFAULT at the column definition level work
     date_created = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
     date_last_modified = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
     categories = relationship("Category", secondary=lambda: story_category_join_table, cascade='all')
@@ -47,8 +56,10 @@ class Story(Base):
         }
 
 
-# Table: category
 class Category(Base):
+    """
+    Category is a Python SQL Alchemy representation of the category DB table.
+    """
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     label = Column(Text, nullable=False)
@@ -63,15 +74,15 @@ class Category(Base):
         }
 
 
-# Join Table: story_category
+# Represents join table story_category
 story_category_join_table = Table('story_category', Base.metadata,
                                   Column('story_id', Integer, ForeignKey('story.id')),
                                   Column('category_id', Integer, ForeignKey('category.id'))
                                   )
 
-# Get DB config
+# Get DB config from external config
 db_config = configparser.ConfigParser()
-db_config.read(os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/storytime.ini')))
+db_config.read(os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/story_time.ini')))
 db_server = db_config['DEFAULT']['db.server']
 db_port = db_config['DEFAULT']['db.port']
 db_name = db_config['DEFAULT']['db.name']

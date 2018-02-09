@@ -17,7 +17,7 @@ I've used this project to further my learning with the following technologies: P
 
 ### Setup
 * Create an empty PostgreSQL DB named `storytime`
-* Copy `config/storytime-template.ini` to `config/storytime.ini`
+* Copy `config/story_time_template.ini` to `config/story_time.ini`
 * Run the statements in `create_schema.sql` to create the DB schema
-* Configure your DB connection settings in `storytime.ini`
+* Configure your DB connection settings in `story_time.ini`
 * Execute `python create_test_data.py` to populate your DB with test data.

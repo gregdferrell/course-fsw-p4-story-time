@@ -141,6 +141,14 @@ def create_category(category: Category):
     return category.id
 
 
+def get_categories():
+    """
+    Gets all active categories.
+    :return: a SQL Alchemy query result representing a list of categories
+    """
+    return db_session.query(Category)
+
+
 def get_category_by_id(category_id: int):
     """
     Gets a category by id

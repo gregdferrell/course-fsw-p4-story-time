@@ -50,8 +50,8 @@ class Story(Base):
             'description': self.description,
             'story_text': self.story_text,
             'user_id': self.user_id,
-            'created_date': self.created_date,
-            'modified_date': self.modified_date,
+            'date_created': self.date_created,
+            'date_last_modified': self.date_last_modified,
             'categories': [category.serialize for category in self.categories]
         }
 

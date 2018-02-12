@@ -15,7 +15,7 @@ app.url_map.strict_slashes = False
 app.register_blueprint(web_api)
 
 
-@app.template_filter()
+@app.template_filter('format_date')
 def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
 
@@ -45,5 +45,6 @@ def view_story(story_id):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
+    app.jinja_env.auto_reload = True
     app.run(host='localhost', port=8000)
     # app.run(host='0.0.0.0', port=8000) # Use to make available on network

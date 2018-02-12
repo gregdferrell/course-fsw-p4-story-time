@@ -25,6 +25,11 @@
                     <h3 id="logo-top" class="text-muted">Story Time App</h3>
                 </div>
                 <div class="col-md-3 text-right">
+                    {% if session['user_id'] %}
+                        <span class="align-text-bottom">Hi, {{ session['username'] }}! (<a href="{{url_for('logout')}}">logout</a>)</span>
+                    {% else %}
+                        <span class="align-text-bottom"><a href="{{url_for('login')}}">Sign In</a></span>
+                    {% endif %}
                 </div>
             </div>
 
@@ -34,6 +39,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="navbar-nav">
+                        {% if session['user_id'] %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{url_for('user_dashboard')}}">Dashboard</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{url_for('index')}}">Stories</a>
                         </li>

@@ -1,0 +1,166 @@
+{% extends "base_layout.html" %}
+
+{% set title = 'Story Time App Sign In' %}
+
+{% block head_scripts %}
+    <script>
+        function start() {
+            gapi.load('auth2', function() {
+                auth2 = gapi.auth2.init({
+                    client_id: '221471888529-jqkcvb297o4s9392mq3cfkmbsjpf6vnb.apps.googleusercontent.com'
+                });
+            });
+        }
+
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '583881485292037',
+                cookie: true,
+                xfbml: true,
+                version: 'v2.12'
+            });
+
+            FB.AppEvents.logPageView();
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+    </script>
+{% endblock %}
+
+{% block page_detail %}
+    <div id="home-page-head">
+        {% include "show_flashed_messages.html" %}
+
+        <div class="row">
+            <div class="col">
+                {# Login Result #}
+                <div id="result" class="alert" style="display: none">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <h2>Sign In</h2>
+                <p>Use one of our authentication providers to create your account or sign in with us.</p>
+            </div>
+        </div>
+        <div class="row" id="sign-in-section">
+            <div class="col text-right">
+                <button id="google-sign-in-button"></button>
+            </div>
+            <div class="col text-left">
+                <div id="facebook-sign-in-button"
+                     class="fb-login-button"
+                     data-width="191"
+                     data-max-rows="1"
+                     data-size="large"
+                     data-button-type="login_with"
+                     data-show-faces="false"
+                     data-auto-logout-link="false"
+                     data-use-continue-as="false"
+                     data-scope="public_profile,email"
+                     onLogin="facebookSignInCallback();">Sign in with Facebook
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_end_scripts %}
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+
+    <script>
+        function facebookSignInCallback() {
+            var oneTimeCode = FB.getAuthResponse()['accessToken'];
+            FB.api('/me', function (response) {
+                // hide the sign-in section button now that we know they're authorized
+                $('#sign-in-section').attr('style', 'display: none');
+
+                // send the one-time-use code to the server to retrieve an access token and log the user in
+                $.ajax({
+                    type: 'POST',
+                    url: 'login-facebook?state={{ state }}',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    processData: false,
+                    data: oneTimeCode,
+                    success: function (result) {
+                        if (result) {
+                            signInSuccess(result);
+                        } else {
+                            signInError('Unexpected error occurred while signing in to Story Time App.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        signInError('Error:' + textStatus + ', ' + errorThrown);
+                    }
+                });
+            });
+        }
+
+        function googleSignInCallback(authResult) {
+            // if this contains 'code', then we know authorization with google api server was successful
+            var oneTimeCode = authResult['code'];
+            if (oneTimeCode) {
+                // hide the sign-in section button now that we know they're authorized
+                $('#sign-in-section').attr('style', 'display: none');
+
+                // send the one-time-use code to the server to retrieve an access token and log the user in
+                $.ajax({
+                    type: 'POST',
+                    url: '/login-google?state={{ state }}',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    contentType: 'application/octet-stream; charset=utf-8',
+                    processData: false,
+                    data: authResult['code'],
+                    success: function(result) {
+                        if (result) {
+                            signInSuccess(result);
+                        } else {
+                            signInError('Unexpected error occurred while signing in to Story Time App.');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        signInError('Error:' + textStatus + ', ' + errorThrown);
+                    }
+                });
+            }
+            else {
+                signInError('Unexpected error occurred while signing in to Google.')
+            }
+        }
+
+        function signInSuccess(result) {
+            window.location.href = '{{url_for("user_dashboard")}}';
+        }
+
+        function signInError(logMessage) {
+            console.log(logMessage);
+            $('#result').attr('style', 'display: block');
+            $('#result').removeClass('alert-success');
+            $('#result').addClass('alert-danger');
+            $('#result').html('Error occurred during sign-in. Try again.');
+            $('#sign-in-section').attr('style', 'display: flex');
+        }
+
+        $( document ).ready(function() {
+            $('#google-sign-in-button').click(function() {
+                auth2.grantOfflineAccess().then(googleSignInCallback);
+            });
+        });
+    </script>
+{% endblock %}

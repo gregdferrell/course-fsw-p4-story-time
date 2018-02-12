@@ -8,8 +8,38 @@ html body {
     cursor: pointer;
 }
 
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    -webkit-border-radius: 75px;
+    -moz-border-radius: 75px;
+}
+
+#google-sign-in-button {
+    background: url(/static/img/btn_google_signin_dark_normal_web.png);
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    height: 46px;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    width: 191px;
+}
+
+#facebook-sign-in-button {
+    color: white; /* TODO: fix hack to hide text on white bg during page load */
+    padding-top: 3px;
+}
+
 .row-v-align {
     align-items: center;
+}
+
+.header {
+    border-bottom: .05rem solid #e5e5e5;
+    padding: 1em 0 1em;
 }
 
 .story-list {

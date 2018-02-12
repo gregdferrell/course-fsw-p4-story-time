@@ -1,0 +1,23 @@
+{% extends "base_layout.html" %}
+
+{% set title = 'Dashboard' %}
+
+{% block page_detail %}
+    {% include "show_flashed_messages.html" %}
+
+    <h2>User Profile</h2>
+
+    <div class="row" id="profile">
+        <div class="col">
+            <p>Name: {{ username }}</p>
+            <p>Email: {{ email }}</p>
+            <img src="{{ picture }}" class="profile-picture"/>
+        </div>
+    </div>
+
+    <h2>My Stories</h2>
+
+    {% for story in stories %}
+        <p>{{ story.title }}</p>
+    {% endfor %}
+{% endblock %}

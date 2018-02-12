@@ -25,40 +25,46 @@ def delete_and_recreate_test_data():
 
         # Create test data
         # Users
-        user_gf_id = story_time_service.create_user(
+        user_1 = story_time_service.create_user(
             User(name='gregdferrell', email='gferrell20@gmail.com', active=True))
-        user_gm_id = story_time_service.create_user(
-            User(name='gregor mendel', email='gregormendel@email.com', active=True))
+        user_2 = story_time_service.create_user(
+            User(name='Jane Doe', email='janedoe@email.com', active=True))
+        user_3 = story_time_service.create_user(
+            User(name='John Smith', email='jonsmith@email.com', active=True))
         num_rows_created = db_session.query(User).count()
         print('Created {} users'.format(num_rows_created))
 
         # Categories
         cat_scary_id = story_time_service.create_category(Category(label='Scary', description='Scary stories!'))
         cat_funny_id = story_time_service.create_category(Category(label='Funny', description='Funny stories!'))
-        cat_animal_id = story_time_service.create_category(
-            Category(label='Animals', description='Stories about animials!'))
-        cat_musical_id = story_time_service.create_category(
-            Category(label='Musical', description='Stories that can be sung to music!'))
-        num_rows_created = db_session.query(Category).count()
-        print('Created {} categories'.format(num_rows_created))
+        cat_animal_id = story_time_service.create_category(Category(label='Animals', description='Stories about animials!'))
+        cat_musical_id = story_time_service.create_category(Category(label='Musical', description='Stories that can be sung to music!'))
+        cat_history_id = story_time_service.create_category(Category(label='History', description='Stories based on true historical events.'))
         cat_scary = story_time_service.get_category_by_id(category_id=cat_scary_id)
         cat_funny = story_time_service.get_category_by_id(category_id=cat_funny_id)
         cat_animal = story_time_service.get_category_by_id(category_id=cat_animal_id)
         cat_musical = story_time_service.get_category_by_id(category_id=cat_musical_id)
+        cat_history = story_time_service.get_category_by_id(category_id=cat_history_id)
+        num_rows_created = db_session.query(Category).count()
+        print('Created {} categories'.format(num_rows_created))
 
         # Stories
         story_zoo = Story(title='Animal Escape', description='See how all the animals escape from the zoo!',
                           story_text='Once upon a time, all the zoo animals got together and planned their escape. This is their story ...',
-                          active=True, user_id=user_gf_id,
+                          active=True, user_id=user_1,
                           categories=[cat_funny, cat_animal])
         story_zoo_id = story_time_service.create_story(story_zoo)
-        story_fresh = Story(title='Fresh Prince', description='A tune from the prince himself.!',
+        story_fresh = Story(title='Fresh Prince', description='A tune from the prince himself!',
                             story_text='Now, this is a story all about how my life got flip-turned upside down ...',
-                            active=True, user_id=user_gf_id, categories=[cat_funny, cat_musical])
+                            active=True, user_id=user_2, categories=[cat_funny, cat_musical])
         story_fresh_id = story_time_service.create_story(story_fresh)
         story_wolf = Story(title='The Big Bad Wolf', description='A story about a scary wolf in the woods!',
                            story_text='One day, a few children were playing near the woods ...',
-                           active=True, user_id=user_gf_id, categories=[cat_scary])
+                           active=True, user_id=user_1, categories=[cat_scary])
+        story_wolf_id = story_time_service.create_story(story_wolf)
+        story_tj = Story(title='Americans vs Pirates', description='A story about the young American country''s fight with the Tripoli pirates.',
+                           story_text='Back in the late 1700s, early 1800s, there was an epic battle between ...',
+                           active=True, user_id=user_3, categories=[cat_history])
         story_wolf_id = story_time_service.create_story(story_wolf)
 
         num_rows_created = db_session.query(Story).count()

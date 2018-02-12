@@ -20,4 +20,12 @@ I've used this project to further my learning with the following technologies: P
 * Copy `config/story_time_template.ini` to `config/story_time.ini`
 * Run the statements in `create_schema.sql` to create the DB schema
 * Configure your DB connection settings in `story_time.ini`
+* Register your app with Facebook and Google APIs
+* Copy `config/client_secrets_facebook_template.ini` to `config/client_secrets_facebook.ini`
+* Configure your Facebook App ID and Secret in `client_secrets_facebook.ini`
+* Copy `config/client_secrets_google_template.ini` to `config/client_secrets_google.ini`
+* Configure your Google app settings in `client_secrets_google.ini`
 * Execute `python create_test_data.py` to populate your DB with test data.
+
+#### Running the Apps
+* Execute `python app.py`

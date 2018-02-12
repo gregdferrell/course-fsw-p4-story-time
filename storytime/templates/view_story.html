@@ -1,0 +1,38 @@
+{% extends "base_layout.html" %}
+
+{% set title = story.title %}
+
+{% block page_detail %}
+    {% include "show_flashed_messages.html" %}
+
+    <h2>{{ title }}</h2>
+
+{#    <div class="row">#}
+{#        <div class="col">#}
+{#            <p>{{ restaurant.description }}</p>#}
+{#            {% if session['user_id'] == restaurant.user_id %}#}
+{#                <p><a class="btn btn-success" href="{{url_for('get_edit_restaurant_page', restaurant_id=restaurant.id)}}">Edit</a></p>#}
+{#                <p><a href="{{url_for('get_create_menu_item_page', restaurant_id=restaurant.id)}}">Create new menu item</a></p>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <div class="row menu-item-list">#}
+{#    {% for menu_item in restaurant.menu_items %}#}
+{#        {% if menu_item.active %}#}
+{#            <div class="col-md-4">#}
+{#                <div class="bg-light menu-item-section">#}
+{#                    <h3>{{menu_item.name}}</h3>#}
+{#                    <p>{{menu_item.description}}</p>#}
+{#                    <p>${{menu_item.price}}</p>#}
+{#                    {% if session['user_id'] == restaurant.user_id %}#}
+{#                    <a class="btn btn-success" href="{{url_for('get_edit_menu_item_page', restaurant_id=restaurant.id, menu_item_id=menu_item.id)}}">Edit</a>#}
+{#                    <a class="btn btn-danger" href="{{url_for('deactivate_menu_item', restaurant_id=restaurant.id, menu_item_id=menu_item.id)}}">Delete</a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#    </div>#}
+
+{% endblock %}

@@ -1,0 +1,27 @@
+/* Styles for Story Time App */
+
+html body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+#logo-top {
+    cursor: pointer;
+}
+
+.row-v-align {
+    align-items: center;
+}
+
+.story-list {
+    margin-top: 1em;
+}
+
+.story-section {
+    border-radius: .5rem;
+    margin-bottom: 1em;
+    padding: 1em 1em 1em;
+}
+
+footer {
+    margin: 10px 0 10px;
+}

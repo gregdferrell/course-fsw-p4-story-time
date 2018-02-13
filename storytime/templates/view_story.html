@@ -5,6 +5,11 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <h2>{{ title }}</h2>
+    <article class="story-detail">
+        <h2 class="text-center">{{ story.title }}</h2>
+        <p class="text-muted font-italic text-center">written by {{ story.user.name }} on {{ story.date_created | format_date }}</p>
+        <h4 class="text-center">{{ story.description }}</h4>
+        <p>{{ story.story_text }}</p>
+    </article>
 
 {% endblock %}

@@ -38,23 +38,23 @@
 {% endblock %}
 
 {% block page_detail %}
-    <div id="home-page-head">
-        {% include "show_flashed_messages.html" %}
+    {% include "show_flashed_messages.html" %}
 
-        <div class="row">
-            <div class="col">
-                {# Login Result #}
-                <div id="result" class="alert" style="display: none">
-                </div>
+    <section class="row">
+        <div class="col">
+            {# Login Result #}
+            <div id="result" class="alert" style="display: none">
             </div>
         </div>
-        <div class="row">
-            <div class="col text-center">
-                <h2>Sign In</h2>
-                <p>Use one of our authentication providers to create your account or sign in with us.</p>
-            </div>
-        </div>
-        <div class="row" id="sign-in-section">
+    </section>
+
+    <section>
+        <header class="text-center">
+            <h2>Sign In</h2>
+            <p>Use one of our authentication providers to create your account or sign in with us.</p>
+        </header>
+
+        <article class="row" id="sign-in-section">
             <div class="col text-right">
                 <button id="google-sign-in-button"></button>
             </div>
@@ -72,8 +72,9 @@
                      onLogin="facebookSignInCallback();">Sign in with Facebook
                 </div>
             </div>
-        </div>
-    </div>
+        </article>
+    </section>
+
 {% endblock %}
 
 {% block page_end_scripts %}

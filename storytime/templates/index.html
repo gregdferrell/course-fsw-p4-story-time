@@ -5,11 +5,13 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <h2>{{ title }}</h2>
+    <header>
+        <h1 class="text-center">{{ title }}</h1>
+    </header>
 
-    <div class="row story-list">
+    <section class="row story-list">
         {% for story in stories %}
-        <div class="col-md-4">
+        <article class="col-12 col-md-6 col-lg-4">
             <div class="bg-light story-section">
                 <h3>{{ story.title }}</h3>
                 <p class="text-muted font-italic">
@@ -20,11 +22,11 @@
                 <p>{{ story.description }}</p>
                 <a class="btn btn-success" href="{{url_for('view_story', story_id=story.id)}}">Read...</a>
             </div>
-        </div>
+        </article>
         {% else %}
-        <div class="col-md-4">
+        <article class="col">
             <p>No stories have been written yet!</p>
-        </div>
+        </article>
         {% endfor %}
-    </div>
+    </section>
 {% endblock %}

@@ -5,19 +5,26 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <h2>User Profile</h2>
-
-    <div class="row" id="profile">
-        <div class="col">
-            <p>Name: {{ username }}</p>
-            <p>Email: {{ email }}</p>
-            <img src="{{ picture }}" class="profile-picture"/>
+    <section>
+        <header>
+            <h2>User Profile</h2>
+        </header>
+        <div class="row" id="profile">
+            <div class="col">
+                <p>Name: {{ username }}</p>
+                <p>Email: {{ email }}</p>
+                <img src="{{ picture }}" class="profile-picture"/>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <h2>My Stories</h2>
+    <section>
+        <header>
+            <h2>My Stories</h2>
+        </header>
+        {% for story in stories %}
+            <p>{{ story.title }}</p>
+        {% endfor %}
+    </section>
 
-    {% for story in stories %}
-        <p>{{ story.title }}</p>
-    {% endfor %}
 {% endblock %}

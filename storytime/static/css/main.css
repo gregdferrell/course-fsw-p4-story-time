@@ -4,16 +4,15 @@ html body {
     font-family: 'Quicksand', sans-serif;
 }
 
-#logo-top {
-    cursor: pointer;
+#facebook-sign-in-button {
+    color: white; /* TODO: fix hack to hide text on white bg during page load */
+    padding-top: 3px;
 }
 
-.profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 75px;
-    -webkit-border-radius: 75px;
-    -moz-border-radius: 75px;
+.footer {
+    border-top: 0.1em solid #EEE;
+    margin: 1em 0 1em;
+    padding-top: 1em;
 }
 
 #google-sign-in-button {
@@ -28,18 +27,30 @@ html body {
     width: 191px;
 }
 
-#facebook-sign-in-button {
-    color: white; /* TODO: fix hack to hide text on white bg during page load */
-    padding-top: 3px;
+.header {
+    border-bottom: .05em solid #E5E5E5;
+    padding: 1em 0 1em;
+}
+
+#logo-top {
+    cursor: pointer;
+}
+
+#main-nav {
+    border: 0.1em solid #EEE;
+    margin-bottom: 1em;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    -webkit-border-radius: 75px;
+    -moz-border-radius: 75px;
 }
 
 .row-v-align {
     align-items: center;
-}
-
-.header {
-    border-bottom: .05rem solid #e5e5e5;
-    padding: 1em 0 1em;
 }
 
 .story-list {
@@ -47,11 +58,9 @@ html body {
 }
 
 .story-section {
+    border: 0.1em solid #EEE;
     border-radius: .5rem;
     margin-bottom: 1em;
     padding: 1em 1em 1em;
-}
-
-footer {
-    margin: 10px 0 10px;
+    text-align: center;
 }

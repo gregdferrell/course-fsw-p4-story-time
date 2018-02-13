@@ -65,7 +65,11 @@ def delete_and_recreate_test_data():
         story_tj = Story(title='Americans vs Pirates', description='A story about the young American country''s fight with the Tripoli pirates.',
                            story_text='Back in the late 1700s, early 1800s, there was an epic battle between ...',
                            active=True, user_id=user_3, categories=[cat_history])
-        story_wolf_id = story_time_service.create_story(story_wolf)
+        story_tj_id = story_time_service.create_story(story_tj)
+        story_bf = Story(title='Benjamin Franklin', description='A not well known story about one of America''s founding fathers, Benjamin Franklin.',
+                           story_text='Once upon a time ...',
+                           active=True, user_id=user_3, categories=[cat_history])
+        story_bf_id = story_time_service.create_story(story_bf)
 
         num_rows_created = db_session.query(Story).count()
         print('Created {} stories'.format(num_rows_created))

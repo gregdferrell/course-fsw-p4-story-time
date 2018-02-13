@@ -1,6 +1,6 @@
 {% extends "base_layout.html" %}
 
-{% set title = 'Story Time App Sign In' %}
+{% set title = 'Sign In' %}
 
 {% block head_scripts %}
     <script>
@@ -40,39 +40,38 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <section class="row">
-        <div class="col">
-            {# Login Result #}
-            <div id="result" class="alert" style="display: none">
+    <section class="container">
+        <div class="row">
+            <div class="col">
+                <div id="result" class="alert" style="display: none"></div>
             </div>
         </div>
     </section>
 
-    <section>
-        <header class="text-center">
-            <h2>Sign In</h2>
-            <p>Use one of our authentication providers to create your account or sign in with us.</p>
-        </header>
-
-        <article class="row" id="sign-in-section">
-            <div class="col text-right">
-                <button id="google-sign-in-button"></button>
-            </div>
-            <div class="col text-left">
-                <div id="facebook-sign-in-button"
-                     class="fb-login-button"
-                     data-width="191"
-                     data-max-rows="1"
-                     data-size="large"
-                     data-button-type="login_with"
-                     data-show-faces="false"
-                     data-auto-logout-link="false"
-                     data-use-continue-as="false"
-                     data-scope="public_profile,email"
-                     onLogin="facebookSignInCallback();">Sign in with Facebook
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Sign In</h1>
+            <p class="lead text-muted">Use one of our authentication providers to create your account or sign in with us.</p>
+            <div class="row">
+                <div class="col text-right">
+                    <button id="google-sign-in-button"></button>
+                </div>
+                <div class="col text-left">
+                    <div id="facebook-sign-in-button"
+                         class="fb-login-button"
+                         data-width="191"
+                         data-max-rows="1"
+                         data-size="large"
+                         data-button-type="login_with"
+                         data-show-faces="false"
+                         data-auto-logout-link="false"
+                         data-use-continue-as="false"
+                         data-scope="public_profile,email"
+                         onLogin="facebookSignInCallback();">Sign in with Facebook
+                    </div>
                 </div>
             </div>
-        </article>
+        </div>
     </section>
 
 {% endblock %}

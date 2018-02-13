@@ -1,79 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Story Time App is where you can write and share your stories.">
+    <meta name="author" content="gregdferrell">
+
     <title>{{ title }}</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    {# Fonts #}
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400" rel="stylesheet">
-
     {# CSS #}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    {# Page Begin Scripts #}
+    {# Javascript #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/8129681b5a.js"></script>
+
     {% block head_scripts %}{% endblock %}
 </head>
 <body>
-    <header class="container">
-        <section class="row row-v-align">
-            <div class="col">
-                <h3 id="logo-top" class="text-muted">Story Time App</h3>
-            </div>
-            <div class="col text-right">
-                {% if session['user_id'] %}
-                    <span class="align-text-bottom">Hi, {{ session['username'] }}! (<a href="{{url_for('logout')}}">logout</a>)</span>
-                {% else %}
-                    <span class="align-text-bottom"><a href="{{url_for('login')}}">Sign In</a></span>
-                {% endif %}
-            </div>
-        </section>
 
-        <nav id="main-nav" class="navbar navbar-expand-md navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="navbar-nav">
+<header>
+    <section class="collapse bg-dark" id="navbar-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Story Time App is platform where anyone can write and share short stories.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <h4 class="text-white">Contact</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="https://github.com/gregdferrell" class="text-white">Find me on Github</a></li>
+                        <li><a href="https://www.linkedin.com/in/gregdferrell" class="text-white">Find me on LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container d-flex justify-content-end">
+            <div class="mr-auto p-2">
+                <a href="{{ url_for('index') }}" class="navbar-brand d-flex align-items-center">
+                    <svg width="30" height="40" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <title>Logo</title>
+                            <rect fill="#FFF" id="canvas_background" height="42" width="32" y="-1" x="-1"></rect>
+                            <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+                                <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"></rect>
+                            </g>
+                        </g>
+                        <g>
+                            <title>Layer 1</title>
+                            <rect id="svg_2" height="30" width="18" y="5.5" x="8.5" stroke-width="1.5" stroke="#343A40" fill="#343A40"></rect>
+                            <rect id="svg_4" height="38.85708" width="28.91424" y="0.6286" x="0.42859" stroke-width="1.5" stroke="#343A40"
+                                  fill="#343A40"></rect>
+                            <path id="svg_5"
+                                  d="m3.94986,4.79595l0,0c0.55755,0 1.00954,-0.44346 1.00954,-0.99049l4.03805,0l0,0c0,0.54703 0.45199,0.99049 1.00954,0.99049l0,3.96186l0,0c-0.55755,0 -1.00954,0.44346 -1.00954,0.99049l-4.03805,0c0,-0.54704 -0.45199,-0.99049 -1.00954,-0.99049l0,-3.96186z"
+                                  stroke-width="1.5" stroke="#343A40" fill="#fff"></path>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_6" y2="4.28574" x2="26.71426"
+                                  y1="4.28574" x1="13.11429" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_7" y2="8.5143" x2="26.71426"
+                                  y1="8.5143" x1="13.11429" fill-opacity="null" stroke-opacity="null" stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_9" y2="12.5143" x2="26.71426"
+                                  y1="12.62858" x1="3.62859" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_11" y2="16.51429" x2="26.71426"
+                                  y1="16.62858" x1="3.62859" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_12" y2="20.4" x2="26.71426"
+                                  y1="20.51428" x1="3.62859" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_13" y2="27.14284" x2="26.71426"
+                                  y1="27.14284" x1="9.11429" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_14" y2="30.45712" x2="26.82855"
+                                  y1="30.57141" x1="3.74287" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                            <line stroke-linecap="null" stroke-linejoin="null" id="svg_15" y2="34.11426" x2="26.82855"
+                                  y1="34.22855" x1="3.74287" fill-opacity="null" stroke-opacity="null"
+                                  stroke-width="1.5"
+                                  stroke="#FFF" fill="none"></line>
+                        </g>
+                    </svg>
+                    <span id="header-app-name"><strong>Story Time App</strong></span>
+                </a>
+            </div>
+
+            <div class="p-2" id="login-info-section">
+                <span class="text-right">
                     {% if session['user_id'] %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('user_dashboard')}}">Dashboard</a>
-                        </li>
+                        <span class="text-white">Hi, {{ session['username'] }}! (<a href="{{ url_for('logout') }}" class="text-white">logout</a>)</span>
+                    {% else %}
+                        <span><a href="{{ url_for('login') }}" class="text-white">Sign In</a></span>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('index')}}">Stories</a>
-                    </li>
-                </ul>
+                </span>
             </div>
-        </nav>
-    </header>
 
-    <main class="container">
-        {% block page_detail %}{% endblock %}
-    </main>
+            <div class="p-2" id="navbar-toggle-section">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header"
+                        aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+</header>
 
-    <footer class="container">
-        <section class="footer">
-            <p class="font-weight-light">Story Time App is brought to you by gregdferrell.</p>
-        </section>
-    </footer>
+<main role="main" class="main-section">
+    {% block page_detail %}{% endblock %}
+</main>
 
-    <!-- Page End Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<footer class="footer">
+    <section class="container">
+        <p class="font-weight-light">Story Time App is platform where anyone can write and share short stories.</p>
+        <p class="font-weight-light">
+            Brought to you by <em>gregdferrell</em>
+            <a href="https://www.github.com/in/gregdferrell" target="_blank" class="footer-icon-link"><span
+                    class="fa fa-github fa-lg text-white" aria-hidden="true"></span></a>
+            <a href="https://www.linkedin.com/in/gregdferrell" target="_blank" class="footer-icon-link"><span
+                    class="fa fa-linkedin fa-lg text-white" aria-hidden="true"></span></a>
+        </p>
+    </section>
+</footer>
 
-    <script>
-        $( document ).ready(function() {
-            $("#logo-top").click(function(){
-                window.location.href = '{{url_for("index")}}';
-            });
-        });
-    </script>
+<!-- Page End Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
-    {% block page_end_scripts %}{% endblock %}
+{% block page_end_scripts %}{% endblock %}
 </body>
 </html>
-

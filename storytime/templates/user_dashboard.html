@@ -5,9 +5,9 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <section>
+    <section class="container user-dashboard-section">
         <header>
-            <h2>User Profile</h2>
+            <h3>User Profile</h3>
         </header>
         <div class="row" id="profile">
             <div class="col">
@@ -18,9 +18,9 @@
         </div>
     </section>
 
-    <section>
+    <section class="container user-dashboard-section">
         <header>
-            <h2>My Stories</h2>
+            <h3>My Stories</h3>
         </header>
         {% for story in stories %}
             <p>{{ story.title }}</p>

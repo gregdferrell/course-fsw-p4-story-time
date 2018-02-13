@@ -1,7 +1,13 @@
-/* Styles for Story Time App */
+/*
+/* Styles for Story Time App
+ */
 
-html body {
-    font-family: 'Quicksand', sans-serif;
+:root {
+    --jumbotron-padding-y: 3rem;
+}
+
+.box-shadow {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
 
 #facebook-sign-in-button {
@@ -9,10 +15,23 @@ html body {
     padding-top: 3px;
 }
 
+.flash-section {
+    margin-top: 2em;
+}
+
 .footer {
-    border-top: 0.1em solid #EEE;
-    margin: 1em 0 1em;
-    padding-top: 1em;
+    background-color: #343A40;
+    color: white;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+}
+
+.footer p {
+    margin-bottom: 0.25rem;
+}
+
+.footer-icon-link {
+    margin: 0 0.5rem 0;
 }
 
 #google-sign-in-button {
@@ -27,18 +46,27 @@ html body {
     width: 191px;
 }
 
-.header {
-    border-bottom: .05em solid #E5E5E5;
-    padding: 1em 0 1em;
+#header-app-name {
+    margin-left: 0.5rem;
 }
 
-#logo-top {
-    cursor: pointer;
+.jumbotron {
+    background-color: #FFF;
+    margin-bottom: 0;
+    padding-bottom: var(--jumbotron-padding-y);
+    padding-top: var(--jumbotron-padding-y);
 }
 
-#main-nav {
-    border: 0.1em solid #EEE;
-    margin-bottom: 1em;
+.jumbotron p:last-child {
+    margin-bottom: 0;
+}
+
+.jumbotron .container {
+    max-width: 40rem;
+}
+
+.jumbotron-heading {
+    font-weight: 300;
 }
 
 .profile-picture {
@@ -49,18 +77,36 @@ html body {
     -moz-border-radius: 75px;
 }
 
-.row-v-align {
-    align-items: center;
+.sign-in-section {
+    margin-bottom: 20rem;
+}
+
+.story-detail {
+    margin-bottom: 3rem;
+    margin-top: 3rem;
 }
 
 .story-list {
-    margin-top: 1em;
+    border-bottom: 0.1em solid #EEE;
+    border-top: 0.1em solid #EEE;
 }
 
-.story-section {
-    border: 0.1em solid #EEE;
-    border-radius: .5rem;
-    margin-bottom: 1em;
-    padding: 1em 1em 1em;
-    text-align: center;
+.user-dashboard-section {
+    margin-top: 3rem;
+
+}
+
+/*
+ * Screen width >= 768 px
+ */
+
+@media (min-width: 768px) {
+    .jumbotron {
+        padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+        padding-top: calc(var(--jumbotron-padding-y) * 2);
+    }
+
+    .story-detail {
+        min-height: 400px;
+    }
 }

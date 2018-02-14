@@ -29,3 +29,15 @@ I've used this project to further my learning with the following technologies: P
 
 #### Running the Apps
 * Execute `python app.py`
+
+# Todo
+* Features
+  * Add nav
+  * Add user profile page
+  * Update dashboard to list stories and allow for CRUD ops
+  * Add likes to stories
+  * Add popular section to index based on likes
+  * Add images to stories
+* Cleanup & bugfix
+  * Update story time service to not return sql alchemy objects to caller
+  * Map 404 to better error handling page

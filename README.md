@@ -39,5 +39,4 @@ I've used this project to further my learning with the following technologies: P
   * Add popular section to index based on likes
   * Add images to stories
 * Cleanup & bugfix
-  * Update story time service to not return sql alchemy objects to caller
   * Map 404 to better error handling page

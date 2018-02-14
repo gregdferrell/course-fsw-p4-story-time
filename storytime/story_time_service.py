@@ -98,7 +98,7 @@ def get_stories():
     Gets all active stories.
     :return: a SQL Alchemy query result representing a list of stories
     """
-    return db_session.query(Story).filter_by(active=True)
+    return db_session.query(Story).filter_by(active=True).all()
 
 
 def get_stories_by_category_id(category_id: int):
@@ -107,7 +107,7 @@ def get_stories_by_category_id(category_id: int):
     :param category_id: the primary key for the category to search on
     :return: a SQL Alchemy query result representing a list of stories
     """
-    return db_session.query(Story).filter_by(active=True).filter(Story.categories.any(Category.id == category_id))
+    return db_session.query(Story).filter_by(active=True).filter(Story.categories.any(Category.id == category_id)).all()
 
 
 def get_stories_by_user_id(user_id: int):
@@ -116,7 +116,7 @@ def get_stories_by_user_id(user_id: int):
     :param user_id: the primary key for the user to search on
     :return: a SQL Alchemy query result representing a list of stories
     """
-    return db_session.query(Story).filter_by(active=True, user_id=user_id)
+    return db_session.query(Story).filter_by(active=True, user_id=user_id).all()
 
 
 def get_story_by_id(story_id: int):
@@ -164,7 +164,7 @@ def get_categories():
     Gets all active categories.
     :return: a SQL Alchemy query result representing a list of categories
     """
-    return db_session.query(Category)
+    return db_session.query(Category).all()
 
 
 def get_category_by_id(category_id: int):

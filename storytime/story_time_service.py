@@ -5,7 +5,9 @@
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from storytime.story_time_db_init import Category, Story, User, db_session
+from storytime.story_time_db_init import Category, Story, User, db_engine, db_session
+
+SQL_GET_STORY_RANDOM = 'SELECT id FROM story ORDER BY random() LIMIT 1'
 
 
 # User functions
@@ -127,6 +129,22 @@ def get_story_by_id(story_id: int):
         return db_session.query(Story).filter_by(id=story_id).one()
     except NoResultFound:
         return None
+
+
+def get_story_random():
+    """
+    Gets a random story
+    :return: the story or None
+    """
+    with db_engine.connect() as con:
+        rs = con.execute(SQL_GET_STORY_RANDOM)
+        row = rs.fetchone()
+        story_id = row[0]
+
+    if not story_id:
+        raise Exception('Unexpected error occurred getting random story')
+
+    return get_story_by_id(story_id=story_id)
 
 
 # Category functions

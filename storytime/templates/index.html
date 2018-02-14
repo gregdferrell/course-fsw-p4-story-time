@@ -14,12 +14,15 @@
                 below.</p>
             <p>
                 <a href="{{ url_for('login') }}" class="btn btn-primary my-2">Sign In</a>
-                <a href="javascript:alert('todo')" class="btn btn-secondary my-2">Read a Random Story</a>
+                <a href="{{ url_for('view_story_random') }}" class="btn btn-secondary my-2">Read a Random Story</a>
             </p>
         </div>
     </section>
 
     <section class="story-list py-5 bg-light">
+        <header>
+            <h1 class="text-center">New</h1>
+        </header>
         <div class="container">
             <div class="row">
                 {% for story in stories %}
@@ -53,4 +56,5 @@
             </div>
         </div>
     </section>
+
 {% endblock %}

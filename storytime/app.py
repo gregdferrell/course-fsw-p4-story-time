@@ -15,6 +15,7 @@ from flask import Flask, abort, flash, make_response, redirect, render_template,
 from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_clientsecrets
 
 from storytime import story_time_service
+from storytime.exceptions import AppException, AppExceptionNotFound
 from storytime.sec_util import AuthProvider, LoginSessionKeys, is_user_authenticated, login_required, \
     reset_user_session, store_user_session
 from storytime.story_time_db_init import User
@@ -36,6 +37,24 @@ app.register_blueprint(web_api)
 @app.template_filter('format_date')
 def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Set default code and message
+    code = 500
+    message = "An unexpected error has occurred on the server. Please wait a short time, then try again."
+
+    if isinstance(e, AppException):
+        # Extract code and message from AppException, if present
+        if e.code and e.message:
+            code = e.code
+            message = e.message
+        elif isinstance(e, AppExceptionNotFound):
+            code = 404
+            message = "The resource you're looking for can't be found."
+
+    return render_template('error.html', error_code=code, error_message=message), code
 
 
 @app.route('/', methods=['GET'])
@@ -248,7 +267,14 @@ def view_story(story_id):
 
     # Resource check - 404
     if not story:
-        abort(404)
+        raise AppExceptionNotFound
+
+    return render_template('view_story.html', story=story)
+
+
+@app.route('/stories/random', methods=['GET'])
+def view_story_random():
+    story = story_time_service.get_story_random()
 
     return render_template('view_story.html', story=story)
 

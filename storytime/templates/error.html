@@ -1,0 +1,15 @@
+{% extends "base_layout.html" %}
+
+{% set title = 'An Error Occurred' %}
+
+{% block page_detail %}
+    <section class="jumbotron text-center">
+        <article class="container">
+            <header>
+                <h1 class="jumbotron-heading">Oops ... An error occured.</h1>
+            </header>
+            <h2 class="text-center">{{ error_code }}</h2>
+            <p class="lead text-muted text-center">{{ error_message }}</p>
+        </article>
+    </section>
+{% endblock %}

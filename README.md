@@ -39,3 +39,5 @@ I've used this project to further my learning with the following technologies: P
 * Cleanup & bugfix
   * Fix @app.errorhandler(Exception) so traceback is still logged to console
   * Map 404 to better error handling page
+  * Facebook login button slow to load
+  * Update links on cards to show the href on footer of browser (not use javascript)

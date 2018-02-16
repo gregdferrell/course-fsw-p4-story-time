@@ -21,7 +21,7 @@
 
     <section class="story-list py-5 bg-light">
         <header>
-            <h1 class="text-center">New</h1>
+            <h1 class="text-center">Latest</h1>
         </header>
         <div class="container">
             <div class="row">
@@ -34,7 +34,7 @@
                         {% set story_thumb_color = '0000CC' %}
                     {% endif %}
                     <div class="col-md-4">
-                        <div class="card mb-4 box-shadow">
+                        <div class="card mb-4 box-shadow cur-point" onclick="window.location='{{ url_for('view_story', story_id=story.id) }}';">
                             <img class="card-img-top"
                                  data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
                                  alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
@@ -44,8 +44,10 @@
                                 <h4>{{ story.title }}</h4>
                                 <p class="card-text">{{ story.description }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <a href="{{ url_for('view_story', story_id=story.id) }}"><button type="button" class="btn btn-sm btn-outline-secondary">Read this story ...</button></a>
+                                    <div>
+                                        {% for category in story.categories %}
+                                            <span class="category-label">{{ category.label }}</span>
+                                        {% endfor %}
                                     </div>
                                     <small class="text-muted">by {{ story.user.name }}</small>
                                 </div>

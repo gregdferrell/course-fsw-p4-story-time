@@ -2,12 +2,41 @@
 /* Styles for Story Time App
  */
 
+body {
+    padding-top: 60px;
+}
+
 :root {
     --jumbotron-padding-y: 3rem;
 }
 
 .box-shadow {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
+}
+
+.category-label {
+    border: 1px solid grey;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: .25em;
+}
+
+.cur-point {
+    cursor: pointer;
+}
+
+.dashboard {
+    margin-bottom: 3em;
+    margin-top: 3em;
+}
+
+.dashboard-user-profile {
+
+}
+
+.dashboard-my-stories {
+
 }
 
 #facebook-sign-in-button {
@@ -89,11 +118,6 @@
 .story-list {
     border-bottom: 0.1rem solid #EEE;
     border-top: 0.1rem solid #EEE;
-}
-
-.user-dashboard-section {
-    margin-top: 3rem;
-
 }
 
 /*

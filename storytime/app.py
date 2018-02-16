@@ -39,11 +39,14 @@ def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
 
 
-@app.errorhandler(Exception)
+# @app.errorhandler(Exception)
 def handle_exception(e):
     # Set default code and message
     code = 500
     message = "An unexpected error has occurred on the server. Please wait a short time, then try again."
+
+    print('Caught exception: ' + str(e))
+    print(e.st)
 
     if isinstance(e, AppException):
         # Extract code and message from AppException, if present

@@ -32,11 +32,10 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Features
-  * Add nav
-  * Add user profile page
   * Update dashboard to list stories and allow for CRUD ops
   * Add likes to stories
   * Add popular section to index based on likes
   * Add images to stories
 * Cleanup & bugfix
+  * Fix @app.errorhandler(Exception) so traceback is still logged to console
   * Map 404 to better error handling page

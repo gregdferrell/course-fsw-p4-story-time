@@ -66,7 +66,7 @@ def delete_and_recreate_test_data():
                            story_text='Back in the late 1700s, early 1800s, there was an epic battle between ...',
                            active=True, user_id=user_3, categories=[cat_history])
         story_tj_id = story_time_service.create_story(story_tj)
-        story_bf = Story(title='Benjamin Franklin', description='A not well known story about one of America''s founding fathers, Benjamin Franklin.',
+        story_bf = Story(title='Benjamin Franklin', description='A not so well known story about one of America''s founding fathers, Benjamin Franklin.',
                            story_text='Once upon a time ...',
                            active=True, user_id=user_3, categories=[cat_history])
         story_bf_id = story_time_service.create_story(story_bf)

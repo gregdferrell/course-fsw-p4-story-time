@@ -267,19 +267,19 @@ def user_dashboard():
 @app.route('/stories/<int:story_id>', methods=['GET'])
 def view_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)
+    story_text_paragraphs = story.story_text.splitlines()
 
     # Resource check - 404
     if not story:
         raise AppExceptionNotFound
 
-    return render_template('view_story.html', story=story)
+    return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs)
 
 
 @app.route('/stories/random', methods=['GET'])
 def view_story_random():
     story = story_time_service.get_story_random()
-
-    return render_template('view_story.html', story=story)
+    return redirect(url_for('view_story', story_id=story.id))
 
 
 # -------------------- MAIN

@@ -35,7 +35,7 @@ class Story(Base):
     title = Column(Text, nullable=False)
     description = Column(Text, nullable=False)
     story_text = Column(Text, nullable=False)
-    active = Column(Boolean, nullable=False)
+    published = Column(Boolean, nullable=False)
     # TODO: Not sure why the server_default is needed to make the DEFAULT at the column definition level work
     date_created = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
     date_last_modified = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
@@ -49,6 +49,7 @@ class Story(Base):
             'id': self.id,
             'title': self.title,
             'description': self.description,
+            'published': self.published,
             'story_text': self.story_text,
             'user_id': self.user_id,
             'date_created': self.date_created,

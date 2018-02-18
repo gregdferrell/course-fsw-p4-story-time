@@ -59,26 +59,26 @@ def delete_and_recreate_test_data():
         # Stories
         story_zoo = Story(title='Animal Escape', description='See how all the animals escape from the zoo!',
                           story_text='<REPLACE>',
-                          active=True, user_id=user_1,
+                          published=True, user_id=user_1,
                           categories=[cat_funny, cat_animal])
         story_zoo_id = story_time_service.create_story(story_zoo)
         story_fresh = Story(title='Fresh Prince', description='A tune from the prince himself!',
                             story_text='<REPLACE>',
-                            active=True, user_id=user_2, categories=[cat_funny, cat_musical])
+                            published=True, user_id=user_2, categories=[cat_funny, cat_musical])
         story_fresh_id = story_time_service.create_story(story_fresh)
         story_wolf = Story(title='The Big Bad Wolf', description='A story about a scary wolf in the woods!',
                            story_text='<REPLACE>',
-                           active=True, user_id=user_1, categories=[cat_scary])
+                           published=True, user_id=user_1, categories=[cat_scary])
         story_wolf_id = story_time_service.create_story(story_wolf)
         story_tj = Story(title='Americans vs Pirates',
                          description='A story about the young American country''s fight with the Tripoli pirates.',
                          story_text='<REPLACE>',
-                         active=True, user_id=user_3, categories=[cat_history])
+                         published=True, user_id=user_3, categories=[cat_history])
         story_tj_id = story_time_service.create_story(story_tj)
         story_bf = Story(title='Benjamin Franklin',
                          description='A not so well known story about one of America''s founding fathers, Benjamin Franklin.',
                          story_text='<REPLACE>',
-                         active=True, user_id=user_3, categories=[cat_history])
+                         published=True, user_id=user_3, categories=[cat_history])
         story_bf_id = story_time_service.create_story(story_bf)
 
         # Update story text for each story from lipsum generator (every second so we don't hit server too hard)

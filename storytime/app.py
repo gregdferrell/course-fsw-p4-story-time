@@ -278,7 +278,7 @@ def create_story():
 
     # Create story from user input
     story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
-                  story_text=request.form.get('text', None), active=True,
+                  story_text=request.form.get('text', None), published=True,
                   categories=categories,
                   user_id=login_session[LoginSessionKeys.USER_ID.value])
 

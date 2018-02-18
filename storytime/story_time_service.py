@@ -2,6 +2,7 @@
 # Story Time App
 # Exposes functions that connect to and query the storytime DB
 #
+
 from typing import List
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -82,13 +83,13 @@ def update_story(story: Story):
     return
 
 
-def deactivate_story(story_id: int):
+def unpublish_story(story_id: int):
     """
-    Deactivates (soft delete) the story for the given story_id
+    Unpublishes the story for the given story_id
     :param story_id: the primary key of the story to deactivate
     """
     story = db_session.query(Story).filter_by(id=story_id).one()
-    story.active = False
+    story.published = False
     db_session.add(story)
     db_session.commit()
     return
@@ -96,28 +97,28 @@ def deactivate_story(story_id: int):
 
 def get_stories():
     """
-    Gets all active stories.
+    Gets all published stories.
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(active=True).all()
+    return db_session.query(Story).filter_by(published=True).all()
 
 
 def get_stories_by_category_id(category_id: int):
     """
-    Gets all active stories for the given category_id.
+    Gets all published stories for the given category_id.
     :param category_id: the primary key for the category to search on
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(active=True).filter(Story.categories.any(Category.id == category_id)).all()
+    return db_session.query(Story).filter_by(published=True).filter(Story.categories.any(Category.id == category_id)).all()
 
 
 def get_stories_by_user_id(user_id: int):
     """
-    Gets all active stories for the given user id.
+    Gets all stories for the given user id.
     :param user_id: the primary key for the user to search on
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(active=True, user_id=user_id).all()
+    return db_session.query(Story).filter_by(user_id=user_id).all()
 
 
 def get_story_by_id(story_id: int):

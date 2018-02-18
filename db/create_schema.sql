@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS story (
   title                 TEXT NOT NULL,
   description           TEXT NOT NULL,
   story_text            TEXT NOT NULL,
-  active                BOOLEAN NOT NULL,
+  published             BOOLEAN NOT NULL,
   date_created          TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'utc'),
   date_last_modified    TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'utc')
 );

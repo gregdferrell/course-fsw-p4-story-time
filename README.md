@@ -32,9 +32,11 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required Features
-  * Categories on cards not wrapping properly
-  * Add edit/delete story functionality
+  * Save as draft vs publish
+  * Add edit story functionality
+  * Add delete story functionality
   * Add browse stories page
+  * Smart delete UI
 * Nice to have
   * Add view user page
   * Add likes to stories
@@ -42,6 +44,7 @@ I've used this project to further my learning with the following technologies: P
   * Add images to stories
 * Cleanup & bugfix
   * Handle newlines properly when creating/viewing stories
+  * Categories on cards not wrapping properly
   * Fix @app.errorhandler(Exception) so traceback is still logged to console
   * Map 404 to better error handling page
   * Facebook login button slow to load

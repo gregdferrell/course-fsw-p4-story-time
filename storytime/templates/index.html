@@ -9,9 +9,8 @@
         <div class="container">
             <h1 class="jumbotron-heading">Story Time</h1>
             <p class="lead text-muted">Story Time is place where you can share stories you've written with others.
-                You can use it as a blogging platform, or simply a place to store short stories you've written for
-                your children. Sign in to get started creating your own stories, or browse through our stories
-                below.</p>
+                Sign in to get started creating your own stories, or browse through our stories below.</p>
+            <p class="lead text-muted">Story Time is home to {{ stories_count }} stories and counting!</p>
             <p>
                 {% if not session['user_id'] %}
                     <a href="{{ url_for('login') }}" class="btn btn-primary my-2">Sign In</a>

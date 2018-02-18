@@ -70,20 +70,20 @@ def delete_and_recreate_test_data():
                            story_text='<REPLACE>',
                            published=True, user_id=user_1, categories=[cat_scary])
         story_wolf_id = story_time_service.create_story(story_wolf)
-        story_tj = Story(title='Americans vs Pirates',
-                         description='A story about the young American country''s fight with the Tripoli pirates.',
+        story_tj = Story(title='Silly Pirates',
+                         description='A true story about the silliest group of pirates you''ve ever heard of!',
                          story_text='<REPLACE>',
                          published=True, user_id=user_3, categories=[cat_history])
         story_tj_id = story_time_service.create_story(story_tj)
         story_bf = Story(title='Benjamin Franklin',
-                         description='A not so well known story about one of America''s founding fathers, Benjamin Franklin.',
+                         description='A not-so-well-known story about Mr. Benjaim Franklin.',
                          story_text='<REPLACE>',
                          published=True, user_id=user_3, categories=[cat_history])
         story_bf_id = story_time_service.create_story(story_bf)
 
         # Update story text for each story from lipsum generator (every second so we don't hit server too hard)
         url = 'https://lipsum.com/feed/json?what=paras&amount=5&start=yes'
-        for story in story_time_service.get_stories():
+        for story in db_session.query(Story).all():
             h = httplib2.Http()
             json_result = json.loads(h.request(url, 'GET')[1])
             story.story_text = json_result['feed']['lipsum']

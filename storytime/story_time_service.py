@@ -5,6 +5,7 @@
 
 from typing import List
 
+from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 
 from storytime.story_time_db_init import Category, Story, User, db_engine, db_session
@@ -95,21 +96,34 @@ def unpublish_story(story_id: int):
     return
 
 
-def get_stories():
+def get_published_stories_count():
+    """
+    Gets the count of all published stories.
+    :return: the number of published stories
+    """
+    return db_session.query(Story).filter_by(published=True).count()
+
+
+def get_published_stories(count: int = None):
     """
     Gets all published stories.
+    :param count: the number of stories to retrieve
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(published=True).all()
+    # TODO write this so we're not duplicating so much code
+    if count:
+        return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()
+    return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()
 
 
-def get_stories_by_category_id(category_id: int):
+def get_published_stories_by_category_id(category_id: int):
     """
     Gets all published stories for the given category_id.
     :param category_id: the primary key for the category to search on
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(published=True).filter(Story.categories.any(Category.id == category_id)).all()
+    return db_session.query(Story).filter_by(published=True).filter(
+        Story.categories.any(Category.id == category_id)).all()
 
 
 def get_stories_by_user_id(user_id: int):

@@ -32,7 +32,7 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required Features
-  * Save as draft vs publish
+  * Add publish/unpublish button on edit story screen
   * Add edit story functionality
   * Add delete story functionality
   * Add browse stories page

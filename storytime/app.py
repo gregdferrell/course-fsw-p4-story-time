@@ -62,12 +62,9 @@ def handle_exception(e):
 
 @app.route('/', methods=['GET'])
 def index():
-    category_id = request.args.get('category')
-    if category_id:
-        stories = story_time_service.get_stories_by_category_id(category_id=category_id)
-    else:
-        stories = story_time_service.get_stories()
-    return render_template('index.html', stories=stories)
+    stories_count = story_time_service.get_published_stories_count()
+    stories = story_time_service.get_published_stories(count=12)
+    return render_template('index.html', stories=stories, stories_count=stories_count)
 
 
 @app.route('/login', methods=['GET'])
@@ -276,9 +273,13 @@ def create_story():
     category_ids = request.form.getlist('categories', type=int)
     categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
 
+    published = True
+    if request.form.get('save_draft'):
+        published = False
+
     # Create story from user input
     story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
-                  story_text=request.form.get('text', None), published=True,
+                  story_text=request.form.get('text', None), published=published,
                   categories=categories,
                   user_id=login_session[LoginSessionKeys.USER_ID.value])
 

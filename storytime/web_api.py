@@ -41,9 +41,9 @@ def handle_exception(e):
 def api_stories():
     category_id = request.args.get('category')
     if category_id:
-        stories = story_time_service.get_stories_by_category_id(category_id)
+        stories = story_time_service.get_published_stories_by_category_id(category_id)
     else:
-        stories = story_time_service.get_stories()
+        stories = story_time_service.get_published_stories()
     return jsonify(Stories=[story.serialize for story in stories])
 
 

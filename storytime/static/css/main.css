@@ -2,10 +2,6 @@
 /* Styles for Story Time App
  */
 
-body {
-    padding-top: 80px;
-}
-
 :root {
     --jumbotron-padding-y: 3rem;
 }
@@ -123,8 +119,8 @@ body {
 }
 
 #story-detail-section {
-    margin-bottom: 4rem;
-    margin-top: 4rem;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
 }
 
 #story-detail-header {

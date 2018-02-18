@@ -7,9 +7,9 @@
 
     <div class="container dashboard">
         <div class="row">
-            <aside class="dashboard-user-profile col-xs-12 col-md-3">
+            <aside class="dashboard-user-profile col-xs-12 col-lg-3">
                 <header class="text-center">
-                    <h2>User Profile</h2>
+                    <h2>Profile</h2>
                 </header>
                 <hr/>
                 <article class="text-center">
@@ -19,13 +19,13 @@
                 </article>
             </aside>
 
-            <section class="dashboard-my-stories col-xs-12 col-md-9">
+            <section class="dashboard-my-stories col-xs-12 col-lg-9">
                 <header class="text-center">
                     <h2>My Stories</h2>
                 </header>
                 <article id="stories-dashboard">
                     <hr/>
-                    <p><a class="btn btn-success" href="{{url_for('get_create_story_page')}}" role="button">Create Story</a></p>
+                    <p class="text-center"><a class="btn btn-success" href="{{url_for('get_create_story_page')}}" role="button">Create Story</a></p>
                     <table class="table">
                         <thead class="thead-light">
                             <tr>

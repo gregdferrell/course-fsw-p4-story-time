@@ -7,7 +7,7 @@
 
     <section class="container" id="story-detail-section">
         <header class="text-center" id="story-detail-header">
-            <h3>{{ story.title }}</h3>
+            <h2>{{ story.title }}</h2>
             <h6>{{ story.description }}</h6>
             <p class="text-muted font-italic">written by {{ story.user.name }} on {{ story.date_created | format_date }}</p>
             {% for category in story.categories %}

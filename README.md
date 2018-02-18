@@ -32,6 +32,7 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required Features
+  * Categories on cards not wrapping properly
   * Add edit/delete story functionality
   * Add browse stories page
 * Nice to have

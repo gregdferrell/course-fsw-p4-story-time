@@ -18,7 +18,7 @@ from storytime import story_time_service
 from storytime.exceptions import AppException, AppExceptionNotFound
 from storytime.sec_util import AuthProvider, LoginSessionKeys, is_user_authenticated, login_required, \
     reset_user_session, store_user_session
-from storytime.story_time_db_init import User
+from storytime.story_time_db_init import User, Story
 from storytime.web_api import web_api
 
 # Auth
@@ -132,8 +132,7 @@ def login_google():
 
     # Check to see if a user is already logged in
     stored_credentials_json = login_session.get(LoginSessionKeys.GOOGLE_CREDENTIALS_JSON.value)
-    stored_credentials = None if not stored_credentials_json else OAuth2Credentials.from_json(
-        stored_credentials_json)
+    stored_credentials = None if not stored_credentials_json else OAuth2Credentials.from_json(stored_credentials_json)
     stored_gplus_id = login_session.get(LoginSessionKeys.GOOGLE_ID.value)
 
     if stored_credentials is not None:
@@ -262,6 +261,37 @@ def user_dashboard():
                            username=login_session.get(LoginSessionKeys.USERNAME.value),
                            email=login_session.get(LoginSessionKeys.EMAIL.value),
                            picture=login_session.get(LoginSessionKeys.PICTURE.value))
+
+
+@app.route('/stories/create', methods=['GET'])
+@login_required
+def get_create_story_page():
+    categories = story_time_service.get_categories()
+    return render_template('create_story.html', categories=categories)
+
+
+@app.route('/stories/create', methods=['POST'])
+@login_required
+def create_story():
+    category_ids = request.form.getlist('categories', type=int)
+    categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
+
+    # Create story from user input
+    story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
+                  story_text=request.form.get('text', None), active=True,
+                  categories=categories,
+                  user_id=login_session[LoginSessionKeys.USER_ID.value])
+
+    # Check required fields from user input
+    if not (story.title, story.description, story.story_text):
+        error_message = 'You must specify the title, description and text for your story!'
+        flash(error_message, 'danger')
+        return redirect(url_for('get_create_story_page'))
+
+    story_time_service.create_story(story)
+    success_message = 'Created {} successfully.'.format(story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('user_dashboard'))
 
 
 @app.route('/stories/<int:story_id>', methods=['GET'])

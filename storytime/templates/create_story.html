@@ -1,0 +1,38 @@
+{% extends "base_layout.html" %}
+
+{% set title = 'Create Story' %}
+
+{% block page_detail %}
+    {% include "show_flashed_messages.html" %}
+
+    <section class="container" id="create-story-section">
+        <header class="text-center" id="create-story-header">
+            <h3>Create Story</h3>
+        </header>
+        <form action="{{url_for('create_story')}}" method="post" >
+            <div class="form-group">
+                <label for="story-title">Title</label>
+                <input type="text" name="title" id="story-title" class="form-control" placeholder="Little Red Riding Hood" required>
+            </div>
+            <div class="form-group">
+                <label for="story-description">Description</label>
+                <input type="text" name="description" id="story-description" class="form-control" placeholder="A story about a girl taking a stroll through the woods ..." required>
+            </div>
+            <div class="form-group">
+                <label for="story-categories">Categories</label>
+                <select multiple name="categories" class="form-control" id="story-categories">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.label }} - {{ category.description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="story-text">Story Text</label>
+                <textarea name="text" rows="12" cols="50" maxlength="4000" id="story-text" class="form-control" placeholder="Once upon a time ..." required></textarea>
+            </div>
+            <button class="btn btn-success" type="submit">Save</button>
+            <a class="btn btn-secondary" href="javascript:history.back()">Cancel</a>
+        </form>
+    </section>
+
+{% endblock %}

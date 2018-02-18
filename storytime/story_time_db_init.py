@@ -5,6 +5,7 @@
 
 import configparser
 import os
+from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text, create_engine, text
 from sqlalchemy.ext.declarative import declarative_base

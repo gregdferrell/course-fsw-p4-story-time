@@ -5,16 +5,35 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <section class="container">
-        <article class="story-detail">
-            <h3 class="text-center">{{ story.title }}</h3>
-            <p class="text-muted font-italic text-center">written by {{ story.user.name }} on {{ story.date_created | format_date }}</p>
-            <h4 class="text-center">{{ story.description }}</h4>
-            {% for story_text_paragraph in story_text_paragraphs %}
-                <p>{{ story_text_paragraph }}</p>
+    <section class="container" id="story-detail-section">
+        <header class="text-center" id="story-detail-header">
+            <h3>{{ story.title }}</h3>
+            <h6>{{ story.description }}</h6>
+            <p class="text-muted font-italic">written by {{ story.user.name }} on {{ story.date_created | format_date }}</p>
+            {% for category in story.categories %}
+                <span class="category-label" data-toggle="tooltip" data-placement="bottom" title="{{ category.description }}">{{ category.label }}</span>
             {% endfor %}
-            <p>{{ story.story_text }}</p>
+        </header>
+        <hr/>
+        <article id="story-detail-body">
+            {% if session['user_id'] == story.user_id %}
+                <div id="story-detail-buttons">
+                    <a class="btn btn-primary" href="#" role="button">Edit</a>
+                    <a class="btn btn-danger" href="#" role="button">Delete</a>
+                </div>
+            {% endif %}
+            {% for story_text_paragraph in story_text_paragraphs %}
+                <p class="text-left">{{ story_text_paragraph }}</p>
+            {% endfor %}
         </article>
     </section>
 
+{% endblock %}
+
+{% block page_end_scripts %}
+    <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}

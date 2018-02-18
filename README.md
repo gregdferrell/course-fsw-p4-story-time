@@ -32,12 +32,15 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required Features
-  * Add CRUD for stories
+  * Add edit/delete story functionality
+  * Add browse stories page
 * Nice to have
-  * Add images to stories
+  * Add view user page
   * Add likes to stories
   * Add popular section to index based on likes
+  * Add images to stories
 * Cleanup & bugfix
+  * Handle newlines properly when creating/viewing stories
   * Fix @app.errorhandler(Exception) so traceback is still logged to console
   * Map 404 to better error handling page
   * Facebook login button slow to load

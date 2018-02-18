@@ -2,6 +2,7 @@
 # Story Time App
 # Exposes functions that connect to and query the storytime DB
 #
+from typing import List
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -96,7 +97,7 @@ def deactivate_story(story_id: int):
 def get_stories():
     """
     Gets all active stories.
-    :return: a SQL Alchemy query result representing a list of stories
+    :return: a list of stories
     """
     return db_session.query(Story).filter_by(active=True).all()
 
@@ -105,7 +106,7 @@ def get_stories_by_category_id(category_id: int):
     """
     Gets all active stories for the given category_id.
     :param category_id: the primary key for the category to search on
-    :return: a SQL Alchemy query result representing a list of stories
+    :return: a list of stories
     """
     return db_session.query(Story).filter_by(active=True).filter(Story.categories.any(Category.id == category_id)).all()
 
@@ -114,7 +115,7 @@ def get_stories_by_user_id(user_id: int):
     """
     Gets all active stories for the given user id.
     :param user_id: the primary key for the user to search on
-    :return: a SQL Alchemy query result representing a list of stories
+    :return: a list of stories
     """
     return db_session.query(Story).filter_by(active=True, user_id=user_id).all()
 
@@ -162,9 +163,9 @@ def create_category(category: Category):
 def get_categories():
     """
     Gets all active categories.
-    :return: a SQL Alchemy query result representing a list of categories
+    :return: a list of categories
     """
-    return db_session.query(Category).all()
+    return db_session.query(Category).order_by(Category.label.asc()).all()
 
 
 def get_category_by_id(category_id: int):
@@ -175,6 +176,18 @@ def get_category_by_id(category_id: int):
     """
     try:
         return db_session.query(Category).filter_by(id=category_id).one()
+    except NoResultFound:
+        return None
+
+
+def get_categories_by_ids(category_ids: List):
+    """
+    Gets a list of categories by their ids
+    :param category_ids: the list of category ids
+    :return: a list of categories
+    """
+    try:
+        return db_session.query(Category).filter(Category.id.in_(category_ids)).all()
     except NoResultFound:
         return None
 

@@ -96,6 +96,18 @@ def unpublish_story(story_id: int):
     return
 
 
+def delete_story(story_id: int):
+    """
+    Permanently deletes the story for the given story_id
+    :param story_id: the primary key of the story to delete
+    """
+    story = db_session.query(Story).filter_by(id=story_id).one()
+    story.categories = []
+    db_session.delete(story)
+    db_session.commit()
+    return
+
+
 def get_published_stories_count():
     """
     Gets the count of all published stories.
@@ -110,7 +122,7 @@ def get_published_stories(count: int = None):
     :param count: the number of stories to retrieve
     :return: a list of stories
     """
-    # TODO write this so we're not duplicating so much code
+    # TODO rewrite this so we're not duplicating so much code
     if count:
         return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()
     return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()

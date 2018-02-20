@@ -8,6 +8,8 @@ from functools import wraps
 
 from flask import abort, session as login_session
 
+from storytime.exceptions import AppException
+
 
 class AuthProvider(Enum):
     GOOGLE = 1
@@ -64,9 +66,9 @@ def is_user_authenticated():
 
 def do_authorization(valid_user_id=0):
     if not is_user_authenticated():
-        abort(401)
+        raise AppException(code=401, message="Not authorized")
     if valid_user_id > 0 and valid_user_id != login_session[LoginSessionKeys.USER_ID.value]:
-        abort(401)
+        raise AppException(code=401, message="Not authorized")
 
 
 def login_required(func):

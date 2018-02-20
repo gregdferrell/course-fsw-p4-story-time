@@ -17,7 +17,7 @@ from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_
 from storytime import story_time_service
 from storytime.exceptions import AppException, AppExceptionNotFound
 from storytime.sec_util import AuthProvider, LoginSessionKeys, is_user_authenticated, login_required, \
-    reset_user_session, store_user_session
+    reset_user_session, store_user_session, do_authorization
 from storytime.story_time_db_init import User, Story
 from storytime.web_api import web_api
 
@@ -291,6 +291,25 @@ def create_story():
 
     story_time_service.create_story(story)
     success_message = 'Created {} successfully.'.format(story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('user_dashboard'))
+
+
+@app.route('/stories/<int:story_id>/delete', methods=['POST'])
+def delete_story(story_id):
+    story = story_time_service.get_story_by_id(story_id=story_id)
+
+    # Resource check - 404
+    if not story:
+        raise AppExceptionNotFound
+
+    # Auth check - 401
+    do_authorization(story.user_id)
+
+    # Delete story
+    story_time_service.delete_story(story.id)
+
+    success_message = 'Successfully deleted story "{}".'.format(story.title)
     flash(success_message, 'success')
     return redirect(url_for('user_dashboard'))
 

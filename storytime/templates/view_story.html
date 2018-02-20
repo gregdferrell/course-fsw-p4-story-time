@@ -19,7 +19,7 @@
             {% if session['user_id'] == story.user_id %}
                 <div id="story-detail-buttons">
                     <a class="btn btn-primary" href="#" role="button">Edit</a>
-                    <a class="btn btn-danger" href="#" role="button">Delete</a>
+                    <a class="btn btn-danger" href="#" role="button" data-toggle="modal" data-target="#delete-modal">Delete</a>
                 </div>
             {% endif %}
             {% for story_text_paragraph in story_text_paragraphs %}
@@ -28,12 +28,49 @@
         </article>
     </section>
 
+    <section class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this story?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label style="color: red;"><strong>Warning!</strong></label>
+                    <label>Deleting the story "<strong>{{ story.title }}</strong>" cannot be undone. Remember, you can always <strong>Unpublish</strong> your story and no one except you will be able to see it.</label>
+                    <label>Type in the title of the story to confirm.</label>
+                    <form>
+                        <div class="form-group">
+                            <label for="story-title" class="col-form-label">Story Title:</label>
+                            <input class="form-control" id="story-title" oninput="enableDeleteButtonCheck()"></input>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('delete_story', story_id=story.id) }}" method="post" >
+                        <input type="hidden" name="story_id" value="{{ story.id }}"/>
+                        <button type="submit" class="btn btn-danger" id="button-delete-story" disabled>Permanently Delete This Story</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
 {% endblock %}
 
 {% block page_end_scripts %}
     <script>
         $(function () {
           $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
+
+        function enableDeleteButtonCheck() {
+            var titleTyped = $("#story-title").val().toUpperCase();
+            var titleActual = "{{ story.title }}".toUpperCase();
+            $("#button-delete-story").prop('disabled', !(titleTyped === titleActual));
+        }
     </script>
 {% endblock %}

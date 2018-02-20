@@ -32,10 +32,8 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required Features
-  * Add publish/unpublish button on view story screen
   * Add edit story functionality
   * Add browse stories page
-  * Smart delete UI
 * Nice to have
   * Add view user page
   * Add likes to stories

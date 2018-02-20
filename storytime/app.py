@@ -314,6 +314,26 @@ def delete_story(story_id):
     return redirect(url_for('user_dashboard'))
 
 
+@app.route('/stories/<int:story_id>/publish', methods=['POST'])
+def story_update_published(story_id):
+    story = story_time_service.get_story_by_id(story_id=story_id)
+
+    # Resource check - 404
+    if not story:
+        raise AppExceptionNotFound
+
+    # Auth check - 401
+    do_authorization(story.user_id)
+
+    # Publish or unpublish story
+    publish_flag = bool(int(request.form.get('pf', 0)))
+    story_time_service.story_update_published_flag(story.id, publish_flag=publish_flag)
+
+    success_message = 'Successfully {} story "{}".'.format('published' if publish_flag else 'unpublished', story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('view_story', story_id=story_id))
+
+
 @app.route('/stories/<int:story_id>', methods=['GET'])
 def view_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)

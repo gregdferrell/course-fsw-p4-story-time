@@ -114,6 +114,10 @@
     -moz-border-radius: 75px;
 }
 
+#publish-story-form {
+    display: inline;
+}
+
 .sign-in-section {
     margin-bottom: 20rem;
 }

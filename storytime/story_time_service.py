@@ -84,13 +84,14 @@ def update_story(story: Story):
     return
 
 
-def unpublish_story(story_id: int):
+def story_update_published_flag(story_id: int, publish_flag: bool):
     """
-    Unpublishes the story for the given story_id
-    :param story_id: the primary key of the story to deactivate
+    Updates the published status for the given story_id
+    :param story_id: the primary key of the story to update
+    :param publish_flag: a boolean indicating whether to set status to published or not
     """
     story = db_session.query(Story).filter_by(id=story_id).one()
-    story.published = False
+    story.published = publish_flag
     db_session.add(story)
     db_session.commit()
     return

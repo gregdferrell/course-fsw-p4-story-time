@@ -3,7 +3,7 @@ The item catalog project is the fourth project in the Udacity Full Stack Web Dev
 
 I have chosen to make a catalog of stories. The app is named **Story Time**.
 
-I've used this project to further my learning with the following technologies: Python, Flask, SQL Alchemy, Postgresql.
+I've used this project to further my learning with the following technologies: Python, Flask, Bootstrap, SQL Alchemy, Postgresql.
 
 # Getting Started
 ### Dependencies
@@ -31,16 +31,12 @@ I've used this project to further my learning with the following technologies: P
 * Execute `python app.py`
 
 # Todo
-* Required Features
-  * Add edit story functionality
-  * Add browse stories page
+* Required features
 * Nice to have
-  * Add view user page
+  * Add public view user page
   * Add likes to stories
-  * Add popular section to index based on likes
-  * Add images to stories
+  * Add images to stories to replace "thumbnail" text
 * Cleanup & bugfix
-  * Handle newlines properly when creating/viewing stories
   * Categories on cards not wrapping properly
   * Fix @app.errorhandler(Exception) so traceback is still logged to console
   * Map 404 to better error handling page

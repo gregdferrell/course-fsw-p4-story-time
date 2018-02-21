@@ -80,19 +80,8 @@ def update_story(story: Story):
     :param story: the story to update
     """
     db_session.add(story)
-    db_session.commit()
-    return
-
-
-def story_update_published_flag(story_id: int, publish_flag: bool):
-    """
-    Updates the published status for the given story_id
-    :param story_id: the primary key of the story to update
-    :param publish_flag: a boolean indicating whether to set status to published or not
-    """
-    story = db_session.query(Story).filter_by(id=story_id).one()
-    story.published = publish_flag
-    db_session.add(story)
+    db_session.execute("UPDATE story SET date_last_modified = TIMEZONE('utc', CURRENT_TIMESTAMP) WHERE id = :id",
+                       {'id': story.id})
     db_session.commit()
     return
 
@@ -123,10 +112,10 @@ def get_published_stories(count: int = None):
     :param count: the number of stories to retrieve
     :return: a list of stories
     """
-    # TODO rewrite this so we're not duplicating so much code
+    query = db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc())
     if count:
-        return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()
-    return db_session.query(Story).filter_by(published=True).order_by(Story.date_created.desc()).limit(count).all()
+        query = query.limit(count)
+    return query.all()
 
 
 def get_published_stories_by_category_id(category_id: int):
@@ -143,9 +132,9 @@ def get_stories_by_user_id(user_id: int):
     """
     Gets all stories for the given user id.
     :param user_id: the primary key for the user to search on
-    :return: a list of stories
+    :return: a list of stories ordered by date last modified descending
     """
-    return db_session.query(Story).filter_by(user_id=user_id).order_by(Story.title.asc()).all()
+    return db_session.query(Story).filter_by(user_id=user_id).order_by(Story.date_last_modified.desc()).all()
 
 
 def get_story_by_id(story_id: int):

@@ -20,11 +20,6 @@
     padding: .25rem .5rem .25rem;
 }
 
-#create-story-section {
-    margin-bottom: 3rem;
-    margin-top: 3rem;
-}
-
 .cur-point {
     cursor: pointer;
 }
@@ -118,6 +113,10 @@
     display: inline;
 }
 
+.published-check {
+    margin-bottom: 1rem;
+}
+
 .sign-in-section {
     margin-bottom: 20rem;
 }
@@ -137,6 +136,15 @@
 
 #story-detail-buttons {
     margin-bottom: 1rem;
+}
+
+#update-story-section {
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+}
+
+#update-story-section form div label {
+    font-weight: bold;
 }
 
 /*

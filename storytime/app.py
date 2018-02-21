@@ -273,9 +273,9 @@ def create_story():
     category_ids = request.form.getlist('categories', type=int)
     categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
 
-    published = True
-    if request.form.get('save_draft'):
-        published = False
+    published = False
+    if request.form.get('published'):
+        published = True
 
     # Create story from user input
     story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
@@ -295,6 +295,54 @@ def create_story():
     return redirect(url_for('user_dashboard'))
 
 
+@app.route('/stories/<int:story_id>/edit', methods=['GET'])
+@login_required
+def get_edit_story_page(story_id):
+    story = story_time_service.get_story_by_id(story_id)
+
+    # Resource check - 404
+    if not story:
+        abort(404)
+
+    # Auth check - 401
+    do_authorization(story.user_id)
+
+    if story:
+        categories = story_time_service.get_categories()
+        return render_template('edit_story.html', story=story, categories=categories)
+    else:
+        return redirect(url_for('user_dashboard'))
+
+
+@app.route('/stories/<int:story_id>/edit', methods=['POST'])
+@login_required
+def edit_story(story_id):
+    story = story_time_service.get_story_by_id(story_id)
+
+    # Resource check - 404
+    if not story:
+        abort(404)
+
+    # Auth check - 401
+    do_authorization(story.user_id)
+
+    # Update fields
+    story.title = request.form.get('title', story.title)
+    story.description = request.form.get('description', story.description)
+    story.story_text = request.form.get('text', story.story_text)
+    category_ids = request.form.getlist('categories', type=int)
+    story.categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
+    story.published = False
+    if request.form.get('published'):
+        story.published = True
+
+    story_time_service.update_story(story)
+
+    success_message = 'Updated {} successfully.'.format(story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('view_story', story_id=story_id))
+
+
 @app.route('/stories/<int:story_id>/delete', methods=['POST'])
 def delete_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)
@@ -312,26 +360,6 @@ def delete_story(story_id):
     success_message = 'Successfully deleted story "{}".'.format(story.title)
     flash(success_message, 'success')
     return redirect(url_for('user_dashboard'))
-
-
-@app.route('/stories/<int:story_id>/publish', methods=['POST'])
-def story_update_published(story_id):
-    story = story_time_service.get_story_by_id(story_id=story_id)
-
-    # Resource check - 404
-    if not story:
-        raise AppExceptionNotFound
-
-    # Auth check - 401
-    do_authorization(story.user_id)
-
-    # Publish or unpublish story
-    publish_flag = bool(int(request.form.get('pf', 0)))
-    story_time_service.story_update_published_flag(story.id, publish_flag=publish_flag)
-
-    success_message = 'Successfully {} story "{}".'.format('published' if publish_flag else 'unpublished', story.title)
-    flash(success_message, 'success')
-    return redirect(url_for('view_story', story_id=story_id))
 
 
 @app.route('/stories/<int:story_id>', methods=['GET'])

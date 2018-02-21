@@ -7,18 +7,6 @@
 
     <div class="container dashboard">
         <div class="row">
-            <aside class="dashboard-user-profile col-xs-12 col-lg-3">
-                <header class="text-center">
-                    <h2>Profile</h2>
-                </header>
-                <hr/>
-                <article class="text-center">
-                    <p>{{ username }}</p>
-                    <p>{{ email }}</p>
-                    <img src="{{ picture }}" class="profile-picture"/>
-                </article>
-            </aside>
-
             <section class="dashboard-my-stories col-xs-12 col-lg-9">
                 <header class="text-center">
                     <h2>My Stories</h2>
@@ -33,7 +21,7 @@
                                 <th style="width: 27%;">Title</th>
                                 <th style="width: 35%;">Description</th>
                                 <th style="width: 15%;">Categories</th>
-                                <th style="width: 20%;">Date Created</th>
+                                <th style="width: 20%;">Last Modified</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,9 +29,9 @@
                                 <tr>
                                     <td>
                                         {% if story.published %}
-                                            <span class="fa fa-check fa-sm" aria-hidden="true" title="Published"></span>
+                                            <span class="fa fa-book fa-sm" aria-hidden="true" title="Published" data-toggle="tooltip" data-placement="bottom"></span>
                                         {% else %}
-                                            <span class="fa fa-pencil fa-sm" aria-hidden="true" title="Draft"></span>
+                                            <span class="fa fa-pencil fa-sm" aria-hidden="true" title="Draft" data-toggle="tooltip" data-placement="bottom"></span>
                                         {% endif %}
                                     </td>
                                     <td><a href="{{ url_for('view_story', story_id=story.id) }}">{{ story.title }}</a></td>
@@ -53,13 +41,33 @@
                                             {{ category.label }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     </td>
-                                    <td>{{ story.date_created | format_date }}</td>
+                                    <td>{{ story.date_last_modified | format_date }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </article>
             </section>
+
+            <aside class="dashboard-user-profile col-xs-12 col-lg-3">
+                <header class="text-center">
+                    <h2>Profile</h2>
+                </header>
+                <hr/>
+                <article class="text-center">
+                    <p>{{ username }}</p>
+                    <p>{{ email }}</p>
+                    <img src="{{ picture }}" class="profile-picture"/>
+                </article>
+            </aside>
         </div>
     </div>
+{% endblock %}
+
+{% block page_end_scripts %}
+    <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
 {% endblock %}

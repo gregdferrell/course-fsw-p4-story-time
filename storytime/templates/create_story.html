@@ -5,7 +5,7 @@
 {% block page_detail %}
     {% include "show_flashed_messages.html" %}
 
-    <section class="container" id="create-story-section">
+    <section class="container" id="update-story-section">
         <header class="text-center" id="create-story-header">
             <h2>Create Story</h2>
         </header>
@@ -13,6 +13,10 @@
             <div class="form-group">
                 <label for="story-title">Title</label>
                 <input type="text" name="title" id="story-title" class="form-control" placeholder="Little Red Riding Hood" required>
+            </div>
+            <div class="form-check published-check">
+                <input type="checkbox" name="published" id="published-check" class="form-check-input">
+                <label class="form-check-label" for="published-check">Published</label>
             </div>
             <div class="form-group">
                 <label for="story-description">Description</label>
@@ -30,8 +34,7 @@
                 <label for="story-text">Story Text</label>
                 <textarea name="text" rows="12" cols="50" maxlength="4000" id="story-text" class="form-control" placeholder="Once upon a time ..." required></textarea>
             </div>
-            <button class="btn btn-success" type="submit" name="save_publish" value="true">Save and Publish</button>
-            <button class="btn btn-primary" type="submit" name="save_draft" value="true">Save as Draft</button>
+            <button class="btn btn-success" type="submit">Save</button>
             <a class="btn btn-secondary" href="javascript:history.back()">Cancel</a>
         </form>
     </section>

@@ -17,25 +17,8 @@
         <hr/>
         <article id="story-detail-body">
             {% if session['user_id'] == story.user_id %}
-                {% set publish_flag = 0 %}
-                {% set publish_label = 'Unpublish' %}
-                {% if not story.published %}
-                    {% set publish_flag = 1 %}
-                    {% set publish_label = 'Publish' %}
-                {% endif %}
-
                 <div id="story-detail-buttons">
-                    <form id="publish-story-form" action="{{ url_for('story_update_published', story_id=story.id) }}" method="post">
-                        {% set publish_flag = 0 %}
-                        {% set publish_label = 'Unpublish' %}
-                        {% if not story.published %}
-                            {% set publish_flag = 1 %}
-                            {% set publish_label = 'Publish' %}
-                        {% endif %}
-                        <input type="hidden" name="pf" value="{{ publish_flag }}"/>
-                        <button type="submit" class="btn btn-success">{{ publish_label }}</button>
-                    </form>
-                    <a class="btn btn-primary" href="#" role="button">Edit</a>
+                    <a class="btn btn-primary" href="{{ url_for('get_edit_story_page', story_id=story.id) }}" role="button">Edit</a>
                     <a class="btn btn-danger" href="#" role="button" data-toggle="modal" data-target="#delete-modal">Delete</a>
                 </div>
             {% endif %}

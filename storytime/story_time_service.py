@@ -145,7 +145,7 @@ def get_stories_by_user_id(user_id: int):
     :param user_id: the primary key for the user to search on
     :return: a list of stories
     """
-    return db_session.query(Story).filter_by(user_id=user_id).all()
+    return db_session.query(Story).filter_by(user_id=user_id).order_by(Story.title.asc()).all()
 
 
 def get_story_by_id(story_id: int):

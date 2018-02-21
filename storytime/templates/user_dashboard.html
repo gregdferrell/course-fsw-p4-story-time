@@ -26,10 +26,11 @@
                 <article id="stories-dashboard">
                     <hr/>
                     <p class="text-center"><a class="btn btn-success" href="{{url_for('get_create_story_page')}}" role="button">Create Story</a></p>
-                    <table class="table">
+                    <table id="user-stories-table" class="table">
                         <thead class="thead-light">
                             <tr>
-                                <th style="width: 30%;">Title</th>
+                                <th></th>
+                                <th style="width: 27%;">Title</th>
                                 <th style="width: 35%;">Description</th>
                                 <th style="width: 15%;">Categories</th>
                                 <th style="width: 20%;">Date Created</th>
@@ -38,6 +39,13 @@
                         <tbody>
                             {% for story in stories %}
                                 <tr>
+                                    <td>
+                                        {% if story.published %}
+                                            <span class="fa fa-check fa-sm" aria-hidden="true" title="Published"></span>
+                                        {% else %}
+                                            <span class="fa fa-pencil fa-sm" aria-hidden="true" title="Draft"></span>
+                                        {% endif %}
+                                    </td>
                                     <td><a href="{{ url_for('view_story', story_id=story.id) }}">{{ story.title }}</a></td>
                                     <td>{{ story.description }}</td>
                                     <td>
@@ -54,5 +62,4 @@
             </section>
         </div>
     </div>
-
 {% endblock %}

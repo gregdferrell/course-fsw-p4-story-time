@@ -36,9 +36,9 @@ I've used this project to further my learning with the following technologies: P
   * Add public view user page
   * Add likes to stories
   * Add images to stories to replace "thumbnail" text
+  * Add proper logging & include traceback when exceptions are caught
 * Cleanup & bugfix
   * Categories on cards not wrapping properly
-  * Fix @app.errorhandler(Exception) so traceback is still logged to console
-  * Map 404 to better error handling page
+  * Map werkzeug caught 404 to better error handling page
   * Facebook login button slow to load
   * Update links on cards to show the href on footer of browser (not use javascript)

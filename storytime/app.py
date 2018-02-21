@@ -39,23 +39,19 @@ def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
 
 
-# @app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(e):
     # Set default code and message
     code = 500
     message = "An unexpected error has occurred on the server. Please wait a short time, then try again."
-
-    print('Caught exception: ' + str(e))
-    print(e.st)
 
     if isinstance(e, AppException):
         # Extract code and message from AppException, if present
         if e.code and e.message:
             code = e.code
             message = e.message
-        elif isinstance(e, AppExceptionNotFound):
-            code = 404
-            message = "The resource you're looking for can't be found."
+
+    print('Caught exception: ' + str(e))
 
     return render_template('error.html', error_code=code, error_message=message), code
 
@@ -365,12 +361,12 @@ def delete_story(story_id):
 @app.route('/stories/<int:story_id>', methods=['GET'])
 def view_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)
-    story_text_paragraphs = story.story_text.splitlines()
 
     # Resource check - 404
     if not story:
         raise AppExceptionNotFound
 
+    story_text_paragraphs = story.story_text.splitlines()
     return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs)
 
 

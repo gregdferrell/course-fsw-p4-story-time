@@ -8,12 +8,13 @@ I've used this project to further my learning with the following technologies: P
 # Getting Started
 ### Dependencies
 * Python 3.6.2
-* pytest==3.3.1
 * flask==0.12.2
 * httplib2==0.10.3
 * oauth2client==4.1.2
 * requests==2.18.4
 * sqlalchemy==1.1.14
+* pytest==3.3.1
+* flask-uploads==0.2.1
 
 ### Setup
 * Create an empty PostgreSQL DB named `storytime`
@@ -32,13 +33,12 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required features
+  * File change on story edit
 * Nice to have
   * Add public view user page
   * Add likes to stories
-  * Add images to stories to replace "thumbnail" text
   * Add proper logging & include traceback when exceptions are caught
 * Cleanup & bugfix
   * Categories on cards not wrapping properly
-  * Map werkzeug caught 404 to better error handling page
   * Facebook login button slow to load
   * Update links on cards to show the href on footer of browser (not use javascript)

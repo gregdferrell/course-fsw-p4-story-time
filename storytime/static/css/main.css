@@ -138,6 +138,14 @@
     margin-bottom: 1rem;
 }
 
+#story-detail-section {
+    margin-top: 1rem;
+}
+
+#story-detail-image {
+    max-width: 400px;
+}
+
 #update-story-section {
     margin-bottom: 3rem;
     margin-top: 3rem;
@@ -145,6 +153,11 @@
 
 #update-story-section form div label {
     font-weight: bold;
+}
+
+.update-story-buttons {
+    margin-bottom: .5rem;
+    margin-top: 1rem;
 }
 
 /*

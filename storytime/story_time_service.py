@@ -5,10 +5,9 @@
 
 from typing import List
 
-from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 
-from storytime.story_time_db_init import Category, Story, User, db_engine, db_session
+from storytime.story_time_db_init import Category, Story, UploadFile, User, db_engine, db_session
 
 SQL_GET_STORY_RANDOM = 'SELECT id FROM story ORDER BY random() LIMIT 1'
 
@@ -93,6 +92,7 @@ def delete_story(story_id: int):
     """
     story = db_session.query(Story).filter_by(id=story_id).one()
     story.categories = []
+    db_session.delete(story.upload_file)
     db_session.delete(story)
     db_session.commit()
     return
@@ -217,5 +217,29 @@ def get_category_by_label(category_label: str):
     """
     try:
         return db_session.query(Category).filter_by(label=category_label).one()
+    except NoResultFound:
+        return None
+
+
+# Upload File functions
+def create_upload_file(file: UploadFile):
+    """
+    Creates the given upload file in the DB.
+    :param file: the upload file
+    :return: an integer representing the primary key of the object created
+    """
+    db_session.add(file)
+    db_session.commit()
+    return file.id
+
+
+def get_upload_file_by_id(upload_file_id: int):
+    """
+    Gets an upload file by id
+    :param upload_file_id: the primary key for the upload file to search for
+    :return: the upload file or None
+    """
+    try:
+        return db_session.query(UploadFile).filter_by(id=upload_file_id).one()
     except NoResultFound:
         return None

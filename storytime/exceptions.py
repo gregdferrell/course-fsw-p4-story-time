@@ -19,3 +19,8 @@ class AppException(Exception):
 class AppExceptionNotFound(AppException):
     def __init__(self, code=404, message="The resource you're looking for can't be found."):
         super().__init__(code=code, message=message)
+
+
+class AppExceptionEntityTooLarge(AppException):
+    def __init__(self, code=413, message="The file you tried to upload exceeded our max size allowed of 256KB."):
+        super().__init__(code=code, message=message)

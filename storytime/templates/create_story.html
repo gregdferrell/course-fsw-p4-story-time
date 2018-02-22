@@ -9,7 +9,7 @@
         <header class="text-center" id="create-story-header">
             <h2>Create Story</h2>
         </header>
-        <form action="{{url_for('create_story')}}" method="post" >
+        <form action="{{url_for('create_story')}}" method="post" enctype="multipart/form-data" >
             <div class="form-group">
                 <label for="story-title">Title</label>
                 <input type="text" name="title" id="story-title" class="form-control" placeholder="Little Red Riding Hood" required>
@@ -17,6 +17,11 @@
             <div class="form-check published-check">
                 <input type="checkbox" name="published" id="published-check" class="form-check-input">
                 <label class="form-check-label" for="published-check">Published</label>
+            </div>
+            <div class="form-group">
+                <label for="story-thumbnail-file">Story Thumbnail</label>
+                <input type="file" name="story-thumbnail" class="form-control-file" id="story-thumbnail-file">
+                <small class="form-text text-muted">Image cannot exceed 256KB and will be resized to 400px wide.</small>
             </div>
             <div class="form-group">
                 <label for="story-description">Description</label>

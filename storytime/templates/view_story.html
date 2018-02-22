@@ -10,9 +10,18 @@
             <h2>{{ story.title }}</h2>
             <h6>{{ story.description }}</h6>
             <p class="text-muted font-italic">written by {{ story.user.name }} on {{ story.date_created | format_date }}</p>
-            {% for category in story.categories %}
-                <span class="category-label" data-toggle="tooltip" data-placement="bottom" title="{{ category.description }}">{{ category.label }}</span>
-            {% endfor %}
+            {% if story.categories %}
+                <div id="story-detail-categories">
+                    {% for category in story.categories %}
+                        <span class="category-label" data-toggle="tooltip" data-placement="bottom" title="{{ category.description }}">{{ category.label }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if story.upload_file %}
+                <div id="story-detail-section">
+                    <img id="story-detail-image" src="{{ story.upload_file.url }}" alt="{{ story.upload_file.filename }}">
+                </div>
+            {% endif %}
         </header>
         <hr/>
         <article id="story-detail-body">

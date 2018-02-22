@@ -4,6 +4,7 @@
 /storytime/config/story_time.ini
 /storytime/config/client_secrets_facebook.json
 /storytime/config/client_secrets_google.json
+/storytime/static/upload
 
 #####
 

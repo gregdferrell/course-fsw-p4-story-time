@@ -5,7 +5,6 @@
 
 import configparser
 import os
-from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, Table, Text, create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
@@ -26,6 +25,24 @@ class User(Base):
     active = Column(Boolean, nullable=False)
 
 
+class UploadFile(Base):
+    """
+    UploadFile is a Python SQL Alchemy representation of the file_upload DB table.
+    """
+    __tablename__ = 'upload_file'
+    id = Column(Integer, primary_key=True)
+    filename = Column(Text, nullable=False, unique=True)
+    url = Column(Text, nullable=False)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'filename': self.filename,
+            'url': self.url
+        }
+
+
 class Story(Base):
     """
     Story is a Python SQL Alchemy representation of the story DB table.
@@ -40,8 +57,10 @@ class Story(Base):
     date_created = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
     date_last_modified = Column(DateTime(timezone=False), server_default=text("NOW() AT TIME ZONE 'utc'"))
     categories = relationship("Category", secondary=lambda: story_category_join_table, cascade='all')
-    user_id = Column(Integer, ForeignKey('sec_user.id'))
+    user_id = Column(Integer, ForeignKey('sec_user.id'), nullable=True)
+    upload_file_id = Column(Integer, ForeignKey('upload_file.id'), nullable=True)
     user = relationship("User")
+    upload_file = relationship("UploadFile")
 
     @property
     def serialize(self):

@@ -5,6 +5,7 @@
 
 import datetime
 import json
+import os
 import random
 import string
 
@@ -12,13 +13,14 @@ import httplib2
 import requests
 from flask import Flask, abort, flash, make_response, redirect, render_template, request, session as login_session, \
     url_for
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_clientsecrets
 
 from storytime import story_time_service
-from storytime.exceptions import AppException, AppExceptionNotFound
-from storytime.sec_util import AuthProvider, LoginSessionKeys, is_user_authenticated, login_required, \
-    reset_user_session, store_user_session, do_authorization
-from storytime.story_time_db_init import User, Story
+from storytime.exceptions import AppException, AppExceptionEntityTooLarge, AppExceptionNotFound
+from storytime.sec_util import AuthProvider, LoginSessionKeys, do_authorization, is_user_authenticated, login_required, \
+    reset_user_session, store_user_session
+from storytime.story_time_db_init import Story, UploadFile, User
 from storytime.web_api import web_api
 
 # Auth
@@ -28,15 +30,31 @@ FACEBOOK_CLIENT_SECRETS_JSON = 'config/client_secrets_facebook.json'
 FACEBOOK_APP_ID = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_id']
 FACEBOOK_APP_SECRET = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_secret']
 
+# Handling Files
+upload_set_photos = UploadSet('photos', IMAGES)
+
 # Setup Flask App
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.register_blueprint(web_api)
+app.config['MAX_CONTENT_LENGTH'] = 256 * 1024  # Max upload file size is 256 KB
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/img'
+configure_uploads(app, upload_set_photos)
 
 
 @app.template_filter('format_date')
 def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
+
+
+@app.errorhandler(404)
+def handle_not_found(error):
+    return handle_exception(AppExceptionNotFound())
+
+
+@app.errorhandler(413)
+def handle_request_entity_too_large(error):
+    return handle_exception(AppExceptionEntityTooLarge())
 
 
 @app.errorhandler(Exception)
@@ -266,29 +284,50 @@ def get_create_story_page():
 @app.route('/stories/create', methods=['POST'])
 @login_required
 def create_story():
+    # Get story categories from form input
     category_ids = request.form.getlist('categories', type=int)
     categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
 
+    # Get published flag from form input
     published = False
     if request.form.get('published'):
         published = True
 
-    # Create story from user input
+    # Create story object from form input
     story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
                   story_text=request.form.get('text', None), published=published,
                   categories=categories,
                   user_id=login_session[LoginSessionKeys.USER_ID.value])
 
-    # Check required fields from user input
+    # Check required fields
     if not (story.title, story.description, story.story_text):
         error_message = 'You must specify the title, description and text for your story!'
         flash(error_message, 'danger')
+        # TODO does not populate create form with data
         return redirect(url_for('get_create_story_page'))
 
+    # Create upload file object from form input
+    upload_file = None
+    if 'story-thumbnail' in request.files:
+        file = request.files['story-thumbnail']
+        orig_filename, file_extension = os.path.splitext(file.filename)
+
+        # Give file a new randomly generated filename
+        new_filename = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(9))
+        file.filename = new_filename + file_extension
+        filename = upload_set_photos.save(file)
+        url = upload_set_photos.url(filename)
+        upload_file = UploadFile(filename=filename, url=url)
+
+    # Save to DB
+    if upload_file:
+        story_time_service.create_upload_file(upload_file)
+        story.upload_file_id = upload_file.id
     story_time_service.create_story(story)
+
     success_message = 'Created {} successfully.'.format(story.title)
     flash(success_message, 'success')
-    return redirect(url_for('user_dashboard'))
+    return redirect(url_for('view_story', story_id=story.id))
 
 
 @app.route('/stories/<int:story_id>/edit', methods=['GET'])

@@ -38,6 +38,7 @@ I've used this project to further my learning with the following technologies: P
   * Add public view user page
   * Add likes to stories
   * Server side validation on create/edit should re-populate the fields in the form
+  * Add logging: http://flask.pocoo.org/docs/0.12/api/#flask.Flask.logger
 * Cleanup & bugfix
   * Categories on cards not wrapping properly
   * Facebook login button slow to load

@@ -53,7 +53,7 @@ def handle_exception(exc):
     Global exception handler for exceptions raised from website and API.
     :param exc: the exception being raised
     :return: the response which is either 1) a rendered HTML template or 2) a JSON response
-    in the case of a call to the API
+    in the case of a call to the API or an XMLHttpRequest
     """
     code = 500
     message = 'An unexpected error occurred while processing your request.'
@@ -63,8 +63,8 @@ def handle_exception(exc):
         code = exc.code
         message = exc.description
 
-    # Return JSON if they were trying to access the api
-    if request.path.startswith('/api'):
+    # Return JSON if they were trying to access the api or if the request is an XMLHttpRequest
+    if request.path.startswith('/api') or request.is_xhr:
         message = {
             'status': code,
             'message': message,
@@ -100,14 +100,14 @@ def login():
 
 @app.route('/login-google', methods=['POST'])
 def login_google():
-    # Two checks against CSRF
-    # 1. If header `X-Requested-With` not present, this could be a CSRF
-    if not request.headers.get('X-Requested-With'):
+    # Checks against CSRF:
+    # 1. Check for presence of `X-Requested-With` header
+    # 2. Request must be an XMLHttpRequest
+    # 3. Validate state token
+    if not request.headers.get('X-Requested-With') or \
+            not request.is_xhr or \
+            request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
         raise Forbidden
-
-    # 2. Validate state token
-    if request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
-        raise Unauthorized
 
     # Obtain one-time-use authorization code
     one_time_auth_code = request.data
@@ -159,7 +159,6 @@ def login_google():
             response.headers['Content-Type'] = 'application/json'
             return response
         else:
-            # TODO Test this scenario
             # If a new user is logging in before the previous user logged out,
             # then reset the session before creating a new one
             reset_user_session()
@@ -188,11 +187,14 @@ def login_google():
 
 @app.route('/login-facebook', methods=['POST'])
 def login_facebook():
-    # Validate state token
-    if request.args.get('state') != login_session[LoginSessionKeys.STATE.value]:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+    # Checks against CSRF:
+    # 1. Check for presence of `X-Requested-With` header
+    # 2. Request must be an XMLHttpRequest
+    # 3. Validate state token
+    if not request.headers.get('X-Requested-With') or \
+            not request.is_xhr or \
+            request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
+        raise Forbidden
 
     # Obtain one-time-use authorization code
     one_time_auth_code = request.get_data(as_text=True)
@@ -236,7 +238,7 @@ def login_facebook():
     return 'Login successful'
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     # Redirect to index if user not logged in
     if not is_user_authenticated():

@@ -39,7 +39,8 @@
                 {% endif %}
                 <li class="nav-item">
                     {% if session['user_id'] %}
-                        <a class="nav-link" href="{{ url_for('logout') }}" class="text-white">Logout</a>
+                        <form action="{{url_for('logout')}}" method="post" id="logout-form"></form>
+                        <a class="nav-link" href="javascript:logout();" class="text-white">Logout</a>
                     {% else %}
                         <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
                     {% endif %}
@@ -73,6 +74,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<script>
+    function logout() {
+        $('#logout-form').submit();
+    }
+</script>
 
 {% block page_end_scripts %}{% endblock %}
 </body>

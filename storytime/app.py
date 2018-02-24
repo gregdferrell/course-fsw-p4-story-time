@@ -382,8 +382,6 @@ def create_story():
 @app.route('/stories/<int:story_id>/edit', methods=['POST'])
 @login_required
 def edit_story(story_id):
-    raise ValueError
-
     story = story_time_service.get_story_by_id(story_id)
 
     # Resource check - 404

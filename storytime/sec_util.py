@@ -6,9 +6,8 @@
 from enum import Enum
 from functools import wraps
 
-from flask import abort, session as login_session
-
-from storytime.exceptions import AppException
+from flask import session as login_session
+from werkzeug.exceptions import Unauthorized
 
 
 class AuthProvider(Enum):
@@ -66,9 +65,9 @@ def is_user_authenticated():
 
 def do_authorization(valid_user_id=0):
     if not is_user_authenticated():
-        raise AppException(code=401, message="Not authorized")
+        raise Unauthorized
     if valid_user_id > 0 and valid_user_id != login_session[LoginSessionKeys.USER_ID.value]:
-        raise AppException(code=401, message="Not authorized")
+        raise Unauthorized
 
 
 def login_required(func):

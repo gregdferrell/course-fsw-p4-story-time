@@ -33,11 +33,11 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required features
-  * File change on story edit
+  * Impl CRSF on entity updates
 * Nice to have
   * Add public view user page
   * Add likes to stories
-  * Add proper logging & include traceback when exceptions are caught
+  * Server side validation on create/edit should re-populate the fields in the form
 * Cleanup & bugfix
   * Categories on cards not wrapping properly
   * Facebook login button slow to load

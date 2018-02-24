@@ -9,9 +9,9 @@
         <header class="text-center" id="create-story-header">
             <h2>Create Story</h2>
         </header>
-        <form action="{{url_for('create_story')}}" method="post" enctype="multipart/form-data" >
+        <form action="{{url_for('create_story')}}" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="story-title">Title</label>
+                <label for="story-title" class="font-weight-bold">Title</label>
                 <input type="text" name="title" id="story-title" class="form-control" placeholder="Little Red Riding Hood" required>
             </div>
             <div class="form-check published-check">
@@ -19,16 +19,16 @@
                 <label class="form-check-label" for="published-check">Published</label>
             </div>
             <div class="form-group">
-                <label for="story-thumbnail-file">Story Thumbnail</label>
-                <input type="file" name="story-thumbnail" class="form-control-file" id="story-thumbnail-file">
-                <small class="form-text text-muted">Image cannot exceed 256KB and will be resized to 400px wide.</small>
+                <label for="story-thumbnail-file" class="font-weight-bold">Story Thumbnail</label>
+                <input type="file" name="story-thumbnail" class="form-control-file" id="story-thumbnail-file" accept="image/png, image/jpeg">
+                <small class="form-text text-muted">Image cannot exceed 512 KB and will be resized to 400px wide.</small>
             </div>
             <div class="form-group">
-                <label for="story-description">Description</label>
+                <label for="story-description" class="font-weight-bold">Description</label>
                 <input type="text" name="description" id="story-description" class="form-control" placeholder="A story about a girl taking a stroll through the woods ..." required>
             </div>
             <div class="form-group">
-                <label for="story-categories">Categories</label>
+                <label for="story-categories" class="font-weight-bold">Categories</label>
                 <select multiple name="categories" class="form-control" id="story-categories">
                     {% for category in categories %}
                         <option value="{{ category.id }}">{{ category.label }} - {{ category.description }}</option>
@@ -36,7 +36,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="story-text">Story Text</label>
+                <label for="story-text" class="font-weight-bold">Story Text</label>
                 <textarea name="text" rows="12" cols="50" maxlength="4000" id="story-text" class="form-control" placeholder="Once upon a time ..." required></textarea>
             </div>
             <button class="btn btn-success" type="submit">Save</button>

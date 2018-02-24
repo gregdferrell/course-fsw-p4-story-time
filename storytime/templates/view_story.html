@@ -18,7 +18,7 @@
                 </div>
             {% endif %}
             {% if story.upload_file %}
-                <div id="story-detail-section">
+                <div id="story-detail-image-section">
                     <img id="story-detail-image" src="{{ story.upload_file.url }}" alt="{{ story.upload_file.filename }}">
                 </div>
             {% endif %}
@@ -53,7 +53,7 @@
                     <form>
                         <div class="form-group">
                             <label for="story-title" class="col-form-label">Story Title:</label>
-                            <input class="form-control" id="story-title" oninput="enableDeleteButtonCheck()"></input>
+                            <input class="form-control" id="story-title" oninput="enableDeleteButtonCheck()" autofocus>
                         </div>
                     </form>
                 </div>
@@ -67,16 +67,22 @@
             </div>
         </div>
     </section>
-
 {% endblock %}
 
 {% block page_end_scripts %}
     <script>
         $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
+            // Setup tooltips
+            $('[data-toggle="tooltip"]').tooltip()
+
+            // Required to autofocus on story title input when modal delete dialogue shows
+            $('#delete-modal').on('shown.bs.modal', function () {
+                $('#story-title').focus();
+            })
         });
 
         function enableDeleteButtonCheck() {
+            // Check whether or not to enable the delete button on the delete modal
             var titleTyped = $("#story-title").val().toUpperCase();
             var titleActual = "{{ story.title }}".toUpperCase();
             $("#button-delete-story").prop('disabled', !(titleTyped === titleActual));

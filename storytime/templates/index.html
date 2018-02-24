@@ -27,7 +27,7 @@
         <div class="container">
             <div class="row">
                 {% for story in stories %}
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <div class="card mb-4 box-shadow cur-point" onclick="window.location='{{ url_for('view_story', story_id=story.id) }}';">
                             {% if story.upload_file %}
                                 <img class="card-img-top" src="{{ story.upload_file.url }}" alt="{{ story.upload_file.filename }}">

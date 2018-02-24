@@ -138,7 +138,7 @@
     margin-bottom: 1rem;
 }
 
-#story-detail-section {
+#story-detail-image-section {
     margin-top: 1rem;
 }
 
@@ -146,13 +146,17 @@
     max-width: 400px;
 }
 
+#story-edit-image-section {
+    margin-bottom: 1rem;
+}
+
+#story-edit-image {
+    max-width: 200px;
+}
+
 #update-story-section {
     margin-bottom: 3rem;
     margin-top: 3rem;
-}
-
-#update-story-section form div label {
-    font-weight: bold;
 }
 
 .update-story-buttons {

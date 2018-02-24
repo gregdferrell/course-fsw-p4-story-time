@@ -6,7 +6,10 @@
 from typing import List
 
 from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.datastructures import FileStorage
 
+from storytime import file_storage_service
+from storytime.app import upload_set_photos
 from storytime.story_time_db_init import Category, Story, UploadFile, User, db_engine, db_session
 
 SQL_GET_STORY_RANDOM = 'SELECT id FROM story ORDER BY random() LIMIT 1'
@@ -62,27 +65,63 @@ def get_user_by_email(email: str):
 
 
 # Story functions
-def create_story(story: Story):
+def create_story(story: Story, image_file: FileStorage = None):
     """
     Creates the given story in the DB.
     :param story: the story to create
+    :param image_file: the image file to save (or None)
     :return: an integer representing the primary key of the object created
     """
-    db_session.add(story)
-    db_session.commit()
-    return story.id
+    try:
+        if image_file:
+            upload_file = file_storage_service.save_file(file=image_file, upload_set=upload_set_photos)
+            create_upload_file(upload_file)
+            story.upload_file_id = upload_file.id
+        db_session.add(story)
+        db_session.commit()
+        return story.id
+    except Exception as exc:
+        db_session.rollback()
+        raise exc
 
 
-def update_story(story: Story):
+def update_story(story: Story, remove_existing_image: bool, new_image_file):
     """
-    Update the given story in the DB.
+
     :param story: the story to update
+    :param remove_existing_image: a flag indicating whether or not to remove the existing image from the story
+    :param new_image_file: a new image file to associate with the story
     """
-    db_session.add(story)
-    db_session.execute("UPDATE story SET date_last_modified = TIMEZONE('utc', CURRENT_TIMESTAMP) WHERE id = :id",
-                       {'id': story.id})
-    db_session.commit()
-    return
+    # Save the old upload file for deletion later (if instructed to remove it)
+    old_upload_file_to_delete = story.upload_file if remove_existing_image and story.upload_file else None
+
+    try:
+        # Removing existing image from story
+        if remove_existing_image:
+            story.upload_file = None
+
+        # Save new file and add new image to story
+        if new_image_file:
+            story.upload_file = file_storage_service.save_file(file=new_image_file, upload_set=upload_set_photos)
+
+        # Save story to DB
+        db_session.add(story)
+        db_session.execute("UPDATE story SET date_last_modified = TIMEZONE('utc', CURRENT_TIMESTAMP) WHERE id = :id",
+                           {'id': story.id})
+
+        # Remove old file from DB
+        if old_upload_file_to_delete:
+            db_session.delete(old_upload_file_to_delete)
+
+        db_session.commit()
+    except Exception as exc:
+        db_session.rollback()
+        raise exc
+
+    # Finally, delete the old image from the file system (do this last so we only delete when we know everything
+    # else has succeeded)
+    if old_upload_file_to_delete:
+        file_storage_service.delete_file(file=old_upload_file_to_delete, upload_set=upload_set_photos)
 
 
 def delete_story(story_id: int):
@@ -90,12 +129,18 @@ def delete_story(story_id: int):
     Permanently deletes the story for the given story_id
     :param story_id: the primary key of the story to delete
     """
-    story = db_session.query(Story).filter_by(id=story_id).one()
-    story.categories = []
-    db_session.delete(story.upload_file)
-    db_session.delete(story)
-    db_session.commit()
-    return
+    try:
+        story = db_session.query(Story).filter_by(id=story_id).one()
+        upload_file = story.upload_file
+        story.categories = []
+        db_session.delete(story)
+        if upload_file:
+            file_storage_service.delete_file(file=upload_file, upload_set=upload_set_photos)
+            db_session.delete(upload_file)
+        db_session.commit()
+    except Exception as exc:
+        db_session.rollback()
+        raise exc
 
 
 def get_published_stories_count():
@@ -152,17 +197,12 @@ def get_story_by_id(story_id: int):
 def get_story_random():
     """
     Gets a random story
-    :return: the story or None
+    :return: the story or None if none exist
     """
     with db_engine.connect() as con:
         rs = con.execute(SQL_GET_STORY_RANDOM)
         row = rs.fetchone()
-        story_id = row[0]
-
-    if not story_id:
-        raise Exception('Unexpected error occurred getting random story')
-
-    return get_story_by_id(story_id=story_id)
+        return get_story_by_id(story_id=row[0]) if row else None
 
 
 # Category functions

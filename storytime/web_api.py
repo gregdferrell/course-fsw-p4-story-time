@@ -4,37 +4,11 @@
 #
 
 from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import NotFound
 
 from storytime import story_time_service
-from storytime.exceptions import AppException, AppExceptionNotFound
 
 web_api = Blueprint('web_api', __name__, template_folder='templates')
-
-
-@web_api.errorhandler(Exception)
-def handle_exception(e):
-    # Set default code and message
-    code = 500
-    url = request.url
-    message = "Server error."
-
-    if isinstance(e, AppException):
-        # Extract code and message from AppException, if present
-        if e.code and e.message:
-            code = e.code
-            message = e.message
-        elif isinstance(e, AppExceptionNotFound):
-            code = 404
-            message = "Resource not found."
-
-    message = {
-        'status': code,
-        'message': message,
-        'url': url
-    }
-    resp = jsonify(message)
-    resp.status_code = code
-    return resp
 
 
 @web_api.route('/api/stories')
@@ -51,7 +25,7 @@ def api_stories():
 def api_story(story_id):
     story = story_time_service.get_story_by_id(story_id)
     if not story:
-        raise AppExceptionNotFound
+        raise NotFound
 
     return jsonify(Story=story.serialize)
 
@@ -66,6 +40,6 @@ def api_categories():
 def api_category(category_id):
     category = story_time_service.get_category_by_id(category_id)
     if not category:
-        raise AppExceptionNotFound
+        raise NotFound
 
     return jsonify(Category=category.serialize)

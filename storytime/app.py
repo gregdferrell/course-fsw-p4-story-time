@@ -1,26 +1,25 @@
 #
 # Story Time App
-# Main flask app
+# Main flask app configuration and website route definitions
 #
 
 import datetime
 import json
-import os
 import random
 import string
 
 import httplib2
 import requests
-from flask import Flask, abort, flash, make_response, redirect, render_template, request, session as login_session, \
-    url_for
+from flask import Flask, flash, jsonify, make_response, redirect, render_template, request, \
+    session as login_session, url_for
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_clientsecrets
+from werkzeug.exceptions import Forbidden, HTTPException, NotFound, Unauthorized, default_exceptions
 
 from storytime import story_time_service
-from storytime.exceptions import AppException, AppExceptionEntityTooLarge, AppExceptionNotFound
 from storytime.sec_util import AuthProvider, LoginSessionKeys, do_authorization, is_user_authenticated, login_required, \
     reset_user_session, store_user_session
-from storytime.story_time_db_init import Story, UploadFile, User
+from storytime.story_time_db_init import Story, User
 from storytime.web_api import web_api
 
 # Auth
@@ -30,50 +29,59 @@ FACEBOOK_CLIENT_SECRETS_JSON = 'config/client_secrets_facebook.json'
 FACEBOOK_APP_ID = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_id']
 FACEBOOK_APP_SECRET = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_secret']
 
-# Handling Files
-upload_set_photos = UploadSet('photos', IMAGES)
-
 # Setup Flask App
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.register_blueprint(web_api)
-app.config['MAX_CONTENT_LENGTH'] = 256 * 1024  # Max upload file size is 256 KB
+
+# Setup File Handling with Flask & Flask-Uploads
+app.config['MAX_CONTENT_LENGTH'] = 512 * 1024  # 512 KB
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/img'
+upload_set_photos = UploadSet('photos', IMAGES)
 configure_uploads(app, upload_set_photos)
 
 
+# Configure Template Filters
 @app.template_filter('format_date')
 def format_date(date: datetime):
     return date.strftime('%B %d, %Y')
 
 
-@app.errorhandler(404)
-def handle_not_found(error):
-    return handle_exception(AppExceptionNotFound())
-
-
-@app.errorhandler(413)
-def handle_request_entity_too_large(error):
-    return handle_exception(AppExceptionEntityTooLarge())
-
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    # Set default code and message
+# Configure Global Exception Handling for website and API
+def handle_exception(exc):
+    """
+    Global exception handler for exceptions raised from website and API.
+    :param exc: the exception being raised
+    :return: the response which is either 1) a rendered HTML template or 2) a JSON response
+    in the case of a call to the API
+    """
     code = 500
-    message = "An unexpected error has occurred on the server. Please wait a short time, then try again."
+    message = 'An unexpected error occurred while processing your request.'
+    url = request.url
 
-    if isinstance(e, AppException):
-        # Extract code and message from AppException, if present
-        if e.code and e.message:
-            code = e.code
-            message = e.message
+    if isinstance(exc, HTTPException):
+        code = exc.code
+        message = exc.description
 
-    print('Caught exception: ' + str(e))
+    # Return JSON if they were trying to access the api
+    if request.path.startswith('/api'):
+        message = {
+            'status': code,
+            'message': message,
+            'url': url
+        }
+
+        return jsonify(message), code
 
     return render_template('error.html', error_code=code, error_message=message), code
 
 
+# Register handle_exception with all error handlers
+for exc in default_exceptions:
+    app.register_error_handler(exc, handle_exception)
+
+
+# WEBSITE ROUTE DEFINITIONS
 @app.route('/', methods=['GET'])
 def index():
     stories_count = story_time_service.get_published_stories_count()
@@ -95,13 +103,11 @@ def login_google():
     # Two checks against CSRF
     # 1. If header `X-Requested-With` not present, this could be a CSRF
     if not request.headers.get('X-Requested-With'):
-        abort(403)
+        raise Forbidden
 
     # 2. Validate state token
     if request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        raise Unauthorized
 
     # Obtain one-time-use authorization code
     one_time_auth_code = request.data
@@ -281,55 +287,6 @@ def get_create_story_page():
     return render_template('create_story.html', categories=categories)
 
 
-@app.route('/stories/create', methods=['POST'])
-@login_required
-def create_story():
-    # Get story categories from form input
-    category_ids = request.form.getlist('categories', type=int)
-    categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
-
-    # Get published flag from form input
-    published = False
-    if request.form.get('published'):
-        published = True
-
-    # Create story object from form input
-    story = Story(title=request.form.get('title', None), description=request.form.get('description', None),
-                  story_text=request.form.get('text', None), published=published,
-                  categories=categories,
-                  user_id=login_session[LoginSessionKeys.USER_ID.value])
-
-    # Check required fields
-    if not (story.title, story.description, story.story_text):
-        error_message = 'You must specify the title, description and text for your story!'
-        flash(error_message, 'danger')
-        # TODO does not populate create form with data
-        return redirect(url_for('get_create_story_page'))
-
-    # Create upload file object from form input
-    upload_file = None
-    if 'story-thumbnail' in request.files:
-        file = request.files['story-thumbnail']
-        orig_filename, file_extension = os.path.splitext(file.filename)
-
-        # Give file a new randomly generated filename
-        new_filename = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(9))
-        file.filename = new_filename + file_extension
-        filename = upload_set_photos.save(file)
-        url = upload_set_photos.url(filename)
-        upload_file = UploadFile(filename=filename, url=url)
-
-    # Save to DB
-    if upload_file:
-        story_time_service.create_upload_file(upload_file)
-        story.upload_file_id = upload_file.id
-    story_time_service.create_story(story)
-
-    success_message = 'Created {} successfully.'.format(story.title)
-    flash(success_message, 'success')
-    return redirect(url_for('view_story', story_id=story.id))
-
-
 @app.route('/stories/<int:story_id>/edit', methods=['GET'])
 @login_required
 def get_edit_story_page(story_id):
@@ -337,7 +294,7 @@ def get_edit_story_page(story_id):
 
     # Resource check - 404
     if not story:
-        abort(404)
+        raise NotFound
 
     # Auth check - 401
     do_authorization(story.user_id)
@@ -349,47 +306,18 @@ def get_edit_story_page(story_id):
         return redirect(url_for('user_dashboard'))
 
 
-@app.route('/stories/<int:story_id>/edit', methods=['POST'])
-@login_required
-def edit_story(story_id):
-    story = story_time_service.get_story_by_id(story_id)
-
-    # Resource check - 404
-    if not story:
-        abort(404)
-
-    # Auth check - 401
-    do_authorization(story.user_id)
-
-    # Update fields
-    story.title = request.form.get('title', story.title)
-    story.description = request.form.get('description', story.description)
-    story.story_text = request.form.get('text', story.story_text)
-    category_ids = request.form.getlist('categories', type=int)
-    story.categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
-    story.published = False
-    if request.form.get('published'):
-        story.published = True
-
-    story_time_service.update_story(story)
-
-    success_message = 'Updated {} successfully.'.format(story.title)
-    flash(success_message, 'success')
-    return redirect(url_for('view_story', story_id=story_id))
-
-
 @app.route('/stories/<int:story_id>/delete', methods=['POST'])
 def delete_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)
 
     # Resource check - 404
     if not story:
-        raise AppExceptionNotFound
+        raise NotFound
 
     # Auth check - 401
     do_authorization(story.user_id)
 
-    # Delete story
+    # Delete story and file
     story_time_service.delete_story(story.id)
 
     success_message = 'Successfully deleted story "{}".'.format(story.title)
@@ -403,7 +331,7 @@ def view_story(story_id):
 
     # Resource check - 404
     if not story:
-        raise AppExceptionNotFound
+        raise NotFound
 
     story_text_paragraphs = story.story_text.splitlines()
     return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs)
@@ -415,10 +343,91 @@ def view_story_random():
     return redirect(url_for('view_story', story_id=story.id))
 
 
+@app.route('/stories/create', methods=['POST'])
+@login_required
+def create_story():
+    # Get story categories from form input
+    category_ids = request.form.getlist('categories', type=int)
+    categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
+
+    # Create story object from form input
+    story = Story(title=request.form.get('title', None),
+                  description=request.form.get('description', None),
+                  story_text=request.form.get('text', None),
+                  published=bool(request.form.get('published')),
+                  categories=categories,
+                  user_id=login_session[LoginSessionKeys.USER_ID.value])
+
+    # Validate required fields
+    if not (story.title, story.description, story.story_text):
+        error_message = 'You must specify the title, description and text for your story.'
+        flash(error_message, 'danger')
+        return redirect(url_for('get_create_story_page'))
+
+    # Get the attached file if present
+    file = None
+    if 'story-thumbnail' in request.files:
+        if request.files.get('story-thumbnail').filename:
+            file = request.files['story-thumbnail']
+
+    # Save Story and file
+    story_time_service.create_story(story=story, image_file=file)
+
+    # Render view
+    success_message = 'Created {} successfully.'.format(story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('view_story', story_id=story.id))
+
+
+@app.route('/stories/<int:story_id>/edit', methods=['POST'])
+@login_required
+def edit_story(story_id):
+    raise ValueError
+
+    story = story_time_service.get_story_by_id(story_id)
+
+    # Resource check - 404
+    if not story:
+        raise NotFound
+
+    # Auth check - 401
+    do_authorization(story.user_id)
+
+    # Get the attached file if present
+    file = None
+    if 'story-thumbnail' in request.files:
+        if request.files.get('story-thumbnail').filename:
+            file = request.files['story-thumbnail']
+
+    # Get remove existing image flag from form input or existence of new file
+    remove_existing_image = bool(request.form.get('remove-existing-thumbnail')) or bool(file)
+
+    # Update Story object from form input
+    story.title = request.form.get('title', story.title)
+    story.description = request.form.get('description', story.description)
+    story.story_text = request.form.get('text', story.story_text)
+    category_ids = request.form.getlist('categories', type=int)
+    story.categories = story_time_service.get_categories_by_ids(category_ids=category_ids)
+    story.published = bool(request.form.get('published'))
+
+    # Validate required fields
+    if not (story.title, story.description, story.story_text):
+        error_message = 'You must specify the title, description and text for your story!'
+        flash(error_message, 'danger')
+        return redirect(url_for('get_edit_story_page'))
+
+    # Save Story and File
+    story_time_service.update_story(story=story, remove_existing_image=remove_existing_image, new_image_file=file)
+
+    # Render View
+    success_message = 'Updated {} successfully.'.format(story.title)
+    flash(success_message, 'success')
+    return redirect(url_for('view_story', story_id=story_id))
+
+
 # -------------------- MAIN
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.jinja_env.auto_reload = True
     app.run(host='localhost', port=8000)
-    # app.run(host='0.0.0.0', port=8000) # Use to make available on network

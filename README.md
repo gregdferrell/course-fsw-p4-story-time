@@ -28,7 +28,7 @@ I've used this project to further my learning with the following technologies: P
 * Configure your Google app settings in `client_secrets_google.ini`
 * Execute `python create_test_data.py` to populate your DB with test data.
 
-#### Running the Apps
+#### Running the App
 * Execute `python app.py`
 
 # Todo

@@ -87,7 +87,7 @@ def create_story(story: Story, image_file: FileStorage = None):
 
 def update_story(story: Story, remove_existing_image: bool, new_image_file):
     """
-
+    Updates a story and its image.
     :param story: the story to update
     :param remove_existing_image: a flag indicating whether or not to remove the existing image from the story
     :param new_image_file: a new image file to associate with the story

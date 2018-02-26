@@ -14,11 +14,11 @@ from flask import Flask, flash, jsonify, make_response, redirect, render_templat
     session as login_session, url_for
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_clientsecrets
-from werkzeug.exceptions import Forbidden, HTTPException, NotFound, Unauthorized, default_exceptions
+from werkzeug.exceptions import HTTPException, NotFound, default_exceptions
 
 from storytime import story_time_service
-from storytime.sec_util import AuthProvider, LoginSessionKeys, do_authorization, is_user_authenticated, login_required, \
-    reset_user_session, store_user_session
+from storytime.sec_util import AuthProvider, LoginSessionKeys, csrf_protect, do_authorization, is_user_authenticated, \
+    login_required, reset_user_session, store_user_session
 from storytime.story_time_db_init import Story, User
 from storytime.web_api import web_api
 
@@ -93,22 +93,14 @@ def index():
 def login():
     # Create a state token to prevent request forgery.
     # Store it in the session for later verification
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
-    login_session[LoginSessionKeys.STATE.value] = state
-    return render_template('login.html', state=state)
+    csrf_token = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    login_session[LoginSessionKeys.CSRF_TOKEN.value] = csrf_token
+    return render_template('login.html', csrf_token=csrf_token)
 
 
 @app.route('/login-google', methods=['POST'])
+@csrf_protect(xhr_only=True)
 def login_google():
-    # Checks against CSRF:
-    # 1. Check for presence of `X-Requested-With` header
-    # 2. Request must be an XMLHttpRequest
-    # 3. Validate state token
-    if not request.headers.get('X-Requested-With') or \
-            not request.is_xhr or \
-            request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
-        raise Forbidden
-
     # Obtain one-time-use authorization code
     one_time_auth_code = request.data
 
@@ -186,16 +178,8 @@ def login_google():
 
 
 @app.route('/login-facebook', methods=['POST'])
+@csrf_protect(xhr_only=True)
 def login_facebook():
-    # Checks against CSRF:
-    # 1. Check for presence of `X-Requested-With` header
-    # 2. Request must be an XMLHttpRequest
-    # 3. Validate state token
-    if not request.headers.get('X-Requested-With') or \
-            not request.is_xhr or \
-            request.args.get('state') != login_session.get(LoginSessionKeys.STATE.value):
-        raise Forbidden
-
     # Obtain one-time-use authorization code
     one_time_auth_code = request.get_data(as_text=True)
 
@@ -303,7 +287,8 @@ def get_edit_story_page(story_id):
 
     if story:
         categories = story_time_service.get_categories()
-        return render_template('edit_story.html', story=story, categories=categories)
+        return render_template('edit_story.html', story=story, categories=categories,
+                               csrf_token=login_session.get(LoginSessionKeys.CSRF_TOKEN.value))
     else:
         return redirect(url_for('user_dashboard'))
 

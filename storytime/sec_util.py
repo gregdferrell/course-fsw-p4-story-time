@@ -5,9 +5,10 @@
 
 from enum import Enum
 from functools import wraps
+from urllib.parse import urlparse
 
-from flask import session as login_session
-from werkzeug.exceptions import Unauthorized
+from flask import request, session as login_session
+from werkzeug.exceptions import Forbidden, Unauthorized
 
 
 class AuthProvider(Enum):
@@ -16,7 +17,7 @@ class AuthProvider(Enum):
 
 
 class LoginSessionKeys(Enum):
-    STATE = 'state'
+    CSRF_TOKEN = 'csrf_token'
     USER_ID = 'user_id'
     USERNAME = 'username'
     EMAIL = 'email'
@@ -77,3 +78,39 @@ def login_required(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def csrf_protect(xhr_only: bool = False):
+    def inner(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Check if this function should only accept XHR
+            if xhr_only and not request.is_xhr:
+                raise Forbidden
+
+            # Check for presence of `X-Requested-With` header in all XHR
+            if request.is_xhr and not request.headers.get('X-Requested-With'):
+                raise Forbidden
+
+            # Confirm that the origin/referer matches the requested URL
+            if request.headers['origin']:
+                if not request.url.startswith(request.headers['origin']):
+                    raise Forbidden
+            elif request.headers['referer']:
+                parsed_uri = urlparse(request.headers['referer'])
+                referer_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+                if not request.url.startswith(referer_domain):
+                    raise Forbidden
+            else:
+                # Either Origin or Referer header must be present to proceed
+                raise Forbidden
+
+            # Validate state token
+            if request.args.get('csrf-token') != login_session.get(LoginSessionKeys.CSRF_TOKEN.value):
+                raise Forbidden
+
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return inner

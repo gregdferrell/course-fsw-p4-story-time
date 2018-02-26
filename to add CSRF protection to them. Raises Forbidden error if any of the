@@ -1,0 +1,156 @@
+warning: LF will be replaced by CRLF in storytime/static/img/story-time-logo.svg.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/README.md b/README.md[m
+[1mindex ba437d7..27e8fb2 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -33,7 +33,6 @@[m [mI've used this project to further my learning with the following technologies: P[m
+ [m
+ # Todo[m
+ * Required features[m
+[31m-  * Impl CRSF on entity updates[m
+ * Nice to have[m
+   * Add public view user page[m
+   * Add likes to stories[m
+[1mdiff --git a/storytime/app.py b/storytime/app.py[m
+[1mindex 0b3a68f..9a9a9c7 100644[m
+[1m--- a/storytime/app.py[m
+[1m+++ b/storytime/app.py[m
+[36m@@ -5,8 +5,7 @@[m
+ [m
+ import datetime[m
+ import json[m
+[31m-import random[m
+[31m-import string[m
+[32m+[m[32mimport secrets[m
+ [m
+ import httplib2[m
+ import requests[m
+[36m@@ -91,9 +90,8 @@[m [mdef index():[m
+ [m
+ @app.route('/login', methods=['GET'])[m
+ def login():[m
+[31m-    # Create a state token to prevent request forgery.[m
+[31m-    # Store it in the session for later verification[m
+[31m-    csrf_token = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))[m
+[32m+[m[32m    # Create a secure, random CSRF token and store in session for later verification.[m
+[32m+[m[32m    csrf_token = secrets.token_urlsafe(40)[m
+     login_session[LoginSessionKeys.CSRF_TOKEN.value] = csrf_token[m
+     return render_template('login.html', csrf_token=csrf_token)[m
+ [m
+[36m@@ -270,7 +268,8 @@[m [mdef user_dashboard():[m
+ @login_required[m
+ def get_create_story_page():[m
+     categories = story_time_service.get_categories()[m
+[31m-    return render_template('create_story.html', categories=categories)[m
+[32m+[m[32m    return render_template('create_story.html', categories=categories,[m
+[32m+[m[32m                           csrf_token=login_session.get(LoginSessionKeys.CSRF_TOKEN.value))[m
+ [m
+ [m
+ @app.route('/stories/<int:story_id>/edit', methods=['GET'])[m
+[36m@@ -294,6 +293,8 @@[m [mdef get_edit_story_page(story_id):[m
+ [m
+ [m
+ @app.route('/stories/<int:story_id>/delete', methods=['POST'])[m
+[32m+[m[32m@login_required[m
+[32m+[m[32m@csrf_protect()[m
+ def delete_story(story_id):[m
+     story = story_time_service.get_story_by_id(story_id=story_id)[m
+ [m
+[36m@@ -321,7 +322,8 @@[m [mdef view_story(story_id):[m
+         raise NotFound[m
+ [m
+     story_text_paragraphs = story.story_text.splitlines()[m
+[31m-    return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs)[m
+[32m+[m[32m    return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs,[m
+[32m+[m[32m                           csrf_token=login_session.get(LoginSessionKeys.CSRF_TOKEN.value))[m
+ [m
+ [m
+ @app.route('/stories/random', methods=['GET'])[m
+[36m@@ -332,6 +334,7 @@[m [mdef view_story_random():[m
+ [m
+ @app.route('/stories/create', methods=['POST'])[m
+ @login_required[m
+[32m+[m[32m@csrf_protect()[m
+ def create_story():[m
+     # Get story categories from form input[m
+     category_ids = request.form.getlist('categories', type=int)[m
+[36m@@ -368,6 +371,7 @@[m [mdef create_story():[m
+ [m
+ @app.route('/stories/<int:story_id>/edit', methods=['POST'])[m
+ @login_required[m
+[32m+[m[32m@csrf_protect()[m
+ def edit_story(story_id):[m
+     story = story_time_service.get_story_by_id(story_id)[m
+ [m
+[1mdiff --git a/storytime/sec_util.py b/storytime/sec_util.py[m
+[1mindex f11cb4c..8f0cad6 100644[m
+[1m--- a/storytime/sec_util.py[m
+[1m+++ b/storytime/sec_util.py[m
+[36m@@ -109,23 +109,17 @@[m [mdef login_required(func):[m
+     """[m
+ [m
+     @wraps(func)[m
+[31m-    def wrapper(*args, **kwargs):[m
+[32m+[m[32m    def decorated_function(*args, **kwargs):[m
+         do_authorization()[m
+         return func(*args, **kwargs)[m
+ [m
+[31m-    return wrapper[m
+[32m+[m[32m    return decorated_function[m
+ [m
+ [m
+ def csrf_protect(xhr_only: bool = False):[m
+[31m-    """[m
+[31m-    Decorator for app.route functions to add CSRF protection to them. Raises Forbidden error if any of the[m
+[31m-    checks do not pass.[m
+[31m-    :param xhr_only: true if we want to enforce that this request be an XMLHttpRequest[m
+[31m-    """[m
+[31m-[m
+[31m-    def inner(func):[m
+[32m+[m[32m    def decorator(func):[m
+         @wraps(func)[m
+[31m-        def wrapper(*args, **kwargs):[m
+[32m+[m[32m        def decorated_function(*args, **kwargs):[m
+             # Check if this function should only accept XHR[m
+             if xhr_only and not request.is_xhr:[m
+                 raise Forbidden[m
+[36m@@ -148,11 +142,11 @@[m [mdef csrf_protect(xhr_only: bool = False):[m
+                 raise Forbidden[m
+ [m
+             # Validate state token[m
+[31m-            if request.args.get('csrf-token') != login_session.get(LoginSessionKeys.CSRF_TOKEN.value):[m
+[32m+[m[32m            if request.values.get('csrf-token') != login_session.get(LoginSessionKeys.CSRF_TOKEN.value):[m
+                 raise Forbidden[m
+ [m
+             return func(*args, **kwargs)[m
+ [m
+[31m-        return wrapper[m
+[32m+[m[32m        return decorated_function[m
+ [m
+[31m-    return inner[m
+[32m+[m[32m    return decorator[m
+[1mdiff --git a/storytime/templates/create_story.html b/storytime/templates/create_story.html[m
+[1mindex fdc89a0..b33c98b 100644[m
+[1m--- a/storytime/templates/create_story.html[m
+[1m+++ b/storytime/templates/create_story.html[m
+[36m@@ -41,6 +41,7 @@[m
+             </div>[m
+             <button class="btn btn-success" type="submit">Save</button>[m
+             <a class="btn btn-secondary" href="javascript:history.back()">Cancel</a>[m
+[32m+[m[32m            <input type="hidden" name="csrf-token" value="{{ csrf_token }}">[m
+         </form>[m
+     </section>[m
+ {% endblock %}[m
+[1mdiff --git a/storytime/templates/view_story.html b/storytime/templates/view_story.html[m
+[1mindex 798a98c..937ffaf 100644[m
+[1m--- a/storytime/templates/view_story.html[m
+[1m+++ b/storytime/templates/view_story.html[m
+[36m@@ -62,6 +62,7 @@[m
+                     <form action="{{ url_for('delete_story', story_id=story.id) }}" method="post" >[m
+                         <input type="hidden" name="story_id" value="{{ story.id }}"/>[m
+                         <button type="submit" class="btn btn-danger" id="button-delete-story" disabled>Permanently Delete This Story</button>[m
+[32m+[m[32m                        <input type="hidden" name="csrf-token" value="{{ csrf_token }}">[m
+                     </form>[m
+                 </div>[m
+             </div>[m

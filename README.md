@@ -33,7 +33,6 @@ I've used this project to further my learning with the following technologies: P
 
 # Todo
 * Required features
-  * Impl CRSF on entity updates
 * Nice to have
   * Add public view user page
   * Add likes to stories

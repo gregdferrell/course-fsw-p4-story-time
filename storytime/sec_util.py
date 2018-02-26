@@ -109,11 +109,11 @@ def login_required(func):
     """
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def decorated_function(*args, **kwargs):
         do_authorization()
         return func(*args, **kwargs)
 
-    return wrapper
+    return decorated_function
 
 
 def csrf_protect(xhr_only: bool = False):
@@ -123,9 +123,9 @@ def csrf_protect(xhr_only: bool = False):
     :param xhr_only: true if we want to enforce that this request be an XMLHttpRequest
     """
 
-    def inner(func):
+    def decorator(func):
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def decorated_function(*args, **kwargs):
             # Check if this function should only accept XHR
             if xhr_only and not request.is_xhr:
                 raise Forbidden
@@ -148,11 +148,11 @@ def csrf_protect(xhr_only: bool = False):
                 raise Forbidden
 
             # Validate state token
-            if request.args.get('csrf-token') != login_session.get(LoginSessionKeys.CSRF_TOKEN.value):
+            if request.values.get('csrf-token') != login_session.get(LoginSessionKeys.CSRF_TOKEN.value):
                 raise Forbidden
 
             return func(*args, **kwargs)
 
-        return wrapper
+        return decorated_function
 
-    return inner
+    return decorator

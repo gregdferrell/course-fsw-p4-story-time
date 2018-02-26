@@ -5,8 +5,7 @@
 
 import datetime
 import json
-import random
-import string
+import secrets
 
 import httplib2
 import requests
@@ -91,9 +90,8 @@ def index():
 
 @app.route('/login', methods=['GET'])
 def login():
-    # Create a state token to prevent request forgery.
-    # Store it in the session for later verification
-    csrf_token = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    # Create a secure, random CSRF token and store in session for later verification.
+    csrf_token = secrets.token_urlsafe(40)
     login_session[LoginSessionKeys.CSRF_TOKEN.value] = csrf_token
     return render_template('login.html', csrf_token=csrf_token)
 
@@ -270,7 +268,8 @@ def user_dashboard():
 @login_required
 def get_create_story_page():
     categories = story_time_service.get_categories()
-    return render_template('create_story.html', categories=categories)
+    return render_template('create_story.html', categories=categories,
+                           csrf_token=login_session.get(LoginSessionKeys.CSRF_TOKEN.value))
 
 
 @app.route('/stories/<int:story_id>/edit', methods=['GET'])
@@ -294,6 +293,8 @@ def get_edit_story_page(story_id):
 
 
 @app.route('/stories/<int:story_id>/delete', methods=['POST'])
+@login_required
+@csrf_protect()
 def delete_story(story_id):
     story = story_time_service.get_story_by_id(story_id=story_id)
 
@@ -321,7 +322,8 @@ def view_story(story_id):
         raise NotFound
 
     story_text_paragraphs = story.story_text.splitlines()
-    return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs)
+    return render_template('view_story.html', story=story, story_text_paragraphs=story_text_paragraphs,
+                           csrf_token=login_session.get(LoginSessionKeys.CSRF_TOKEN.value))
 
 
 @app.route('/stories/random', methods=['GET'])
@@ -332,6 +334,7 @@ def view_story_random():
 
 @app.route('/stories/create', methods=['POST'])
 @login_required
+@csrf_protect()
 def create_story():
     # Get story categories from form input
     category_ids = request.form.getlist('categories', type=int)
@@ -368,6 +371,7 @@ def create_story():
 
 @app.route('/stories/<int:story_id>/edit', methods=['POST'])
 @login_required
+@csrf_protect()
 def edit_story(story_id):
     story = story_time_service.get_story_by_id(story_id)
 

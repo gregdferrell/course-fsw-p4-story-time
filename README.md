@@ -42,3 +42,4 @@ I've used this project to further my learning with the following technologies: P
   * Categories on cards not wrapping properly
   * Facebook login button slow to load
   * Update links on cards to show the href on footer of browser (not use javascript)
+  * Clean up duplicate code in create/edit story forms

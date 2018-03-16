@@ -5,7 +5,18 @@ I have chosen to make a catalog of stories. The app is named **Story Time**.
 
 I've used this project to further my learning with the following technologies: Python, Flask, Bootstrap, SQL Alchemy, Postgresql.
 
-# Getting Started
+## Usage & Screenshots
+
+Home Page - Read all published stories from our home page.
+![Story Time - Home Page](demo/story-time-index.png?raw=true "Story Time - Home Page")
+
+Sign In - Sign in using your Google or Facebook account.
+![Story Time - Sign In](demo/story-sign-in.png?raw=true "Story Time - Sign In")
+
+My Stories - Create, publish and view your stories.
+![Story Time - My Stories](demo/story-sign-in.png?raw=true "Story Time - My Stories")
+
+## Getting Started With Development
 ### Dependencies
 * Python 3.6.2
 * flask==0.12.2
@@ -28,12 +39,13 @@ I've used this project to further my learning with the following technologies: P
 * Configure your Google app settings in `client_secrets_google.ini`
 * Execute `python create_test_data.py` to populate your DB with test data.
 
-#### Running the App
+### Running the App
 * Execute `python app.py`
 
-# Todo
+### Todo
 * Required features
 * Nice to have
+  * Author section when viewing story
   * Add public view user page
   * Add likes to stories
   * Server side validation on create/edit should re-populate the fields in the form

@@ -7,21 +7,21 @@ I've used this project to further my learning with the following technologies: P
 
 ## Usage & Screenshots
 
-#### Home Page
+### Home Page
 
-*Read all published stories from our the page.*
+*Read all published stories from the home page.*
 
 ![Story Time - Home Page](demo/story-time-index.png "Story Time - Home Page")
 
-#### Sign In
+### Sign In
 
 *Sign in using your Google or Facebook account.*
 
 ![Story Time - Sign In](demo/story-time-sign-in.png "Story Time - Sign In")
 
-#### Create and View My Stories
+### Create and View My Stories
 
-*Create, publish and view your stories.*
+*Create, publish and view your stories once you're logged in.*
 
 ![Story Time - My Stories](demo/story-time-my-stories.png "Story Time - My Stories")
 

@@ -8,13 +8,16 @@ I've used this project to further my learning with the following technologies: P
 ## Usage & Screenshots
 
 Home Page - Read all published stories from our home page.
-![Story Time - Home Page](demo/story-time-index.png?raw=true "Story Time - Home Page")
+
+![Story Time - Home Page](demo/story-time-index.png "Story Time - Home Page")
 
 Sign In - Sign in using your Google or Facebook account.
-![Story Time - Sign In](demo/story-sign-in.png?raw=true "Story Time - Sign In")
+
+![Story Time - Sign In](demo/story-sign-in.png "Story Time - Sign In")
 
 My Stories - Create, publish and view your stories.
-![Story Time - My Stories](demo/story-sign-in.png?raw=true "Story Time - My Stories")
+
+![Story Time - My Stories](demo/story-sign-in.png "Story Time - My Stories")
 
 ## Getting Started With Development
 ### Dependencies

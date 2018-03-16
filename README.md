@@ -13,11 +13,11 @@ Home Page - Read all published stories from our home page.
 
 Sign In - Sign in using your Google or Facebook account.
 
-![Story Time - Sign In](demo/story-sign-in.png "Story Time - Sign In")
+![Story Time - Sign In](demo/story-time-sign-in.png "Story Time - Sign In")
 
 My Stories - Create, publish and view your stories.
 
-![Story Time - My Stories](demo/story-sign-in.png "Story Time - My Stories")
+![Story Time - My Stories](demo/story-time-my-stories.png "Story Time - My Stories")
 
 ## Getting Started With Development
 ### Dependencies

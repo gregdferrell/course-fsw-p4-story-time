@@ -1,7 +1,7 @@
-# Udacity Full Stack Web Developer Project 4: Item Catalog
+# Story Time - Udacity Full Stack Web Developer Project 4
 The item catalog project is the fourth project in the Udacity Full Stack Web Developer nano-degree.
 
-I have chosen to make a catalog of stories. The app is named **Story Time**.
+The app is named **Story Time**.
 
 I've used this project to further my learning with the following technologies: Python, Flask, Bootstrap, SQL Alchemy, Postgresql.
 
@@ -51,16 +51,3 @@ I've used this project to further my learning with the following technologies: P
 ### Running the App
 * Execute `python app.py`
 
-### Todo
-* Required features
-* Nice to have
-  * Author section when viewing story
-  * Add public view user page
-  * Add likes to stories
-  * Server side validation on create/edit should re-populate the fields in the form
-  * Add logging: http://flask.pocoo.org/docs/0.12/api/#flask.Flask.logger
-* Cleanup & bugfix
-  * Categories on cards not wrapping properly
-  * Facebook login button slow to load
-  * Update links on cards to show the href on footer of browser (not use javascript)
-  * Clean up duplicate code in create/edit story forms

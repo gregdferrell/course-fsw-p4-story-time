@@ -5,6 +5,7 @@
 
 import datetime
 import json
+import os
 import random
 import string
 
@@ -23,9 +24,9 @@ from storytime.story_time_db_init import Story, User
 from storytime.web_api import web_api
 
 # Auth
-GOOGLE_CLIENT_SECRETS_JSON = 'config/client_secrets_google.json'
+GOOGLE_CLIENT_SECRETS_JSON = os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_google.json'))
 GOOGLE_CLIENT_ID = json.loads(open(GOOGLE_CLIENT_SECRETS_JSON, 'r').read())['web']['client_id']
-FACEBOOK_CLIENT_SECRETS_JSON = 'config/client_secrets_facebook.json'
+FACEBOOK_CLIENT_SECRETS_JSON = os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_facebook.json'))
 FACEBOOK_APP_ID = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_id']
 FACEBOOK_APP_SECRET = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_secret']
 

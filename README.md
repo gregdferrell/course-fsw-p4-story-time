@@ -9,19 +9,19 @@ I've used this project to further my learning with the following technologies: P
 
 ### Home Page
 
-*Read all published stories from the home page.*
+*Read published stories:*
 
 ![Story Time - Home Page](demo/story-time-index.png "Story Time - Home Page")
 
 ### Sign In
 
-*Sign in using your Google or Facebook account.*
+*Sign in using your Google or Facebook account:*
 
 ![Story Time - Sign In](demo/story-time-sign-in.png "Story Time - Sign In")
 
 ### Create and View My Stories
 
-*Create, publish and view your stories once you're logged in.*
+*Create, publish and view your stories once you're logged in:*
 
 ![Story Time - My Stories](demo/story-time-my-stories.png "Story Time - My Stories")
 
@@ -35,6 +35,7 @@ I've used this project to further my learning with the following technologies: P
 * sqlalchemy==1.1.14
 * pytest==3.3.1
 * flask-uploads==0.2.1
+* psycopg2==2.7.4
 
 ### Setup
 * Create an empty PostgreSQL DB named `storytime`

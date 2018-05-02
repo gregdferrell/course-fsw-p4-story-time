@@ -8,6 +8,14 @@ import json
 import httplib2
 import time
 
+if __name__ == "__main__" and __package__ is None:
+    from sys import path
+    from os.path import dirname as dir
+
+    path.append(dir(path[0]))
+    __package__ = "db"
+
+
 from storytime import story_time_service
 from storytime.story_time_db_init import Category, Story, User, db_session
 
@@ -85,7 +93,7 @@ def delete_and_recreate_test_data():
         url = 'https://lipsum.com/feed/json?what=paras&amount=5&start=yes'
         for story in db_session.query(Story).all():
             h = httplib2.Http()
-            json_result = json.loads(h.request(url, 'GET')[1])
+            json_result = json.loads(str(h.request(url, 'GET')[1], 'utf-8'))
             story.story_text = json_result['feed']['lipsum']
             db_session.add(story)
             db_session.commit()

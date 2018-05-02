@@ -9,7 +9,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.datastructures import FileStorage
 
 from storytime import file_storage_service
-from storytime.app import upload_set_photos
 from storytime.story_time_db_init import Category, Story, UploadFile, User, db_engine, db_session
 
 SQL_GET_STORY_RANDOM = 'SELECT id FROM story ORDER BY random() LIMIT 1'
@@ -74,7 +73,7 @@ def create_story(story: Story, image_file: FileStorage = None):
     """
     try:
         if image_file:
-            upload_file = file_storage_service.save_file(file=image_file, upload_set=upload_set_photos)
+            upload_file = file_storage_service.save_file(file=image_file)
             create_upload_file(upload_file)
             story.upload_file_id = upload_file.id
         db_session.add(story)
@@ -102,7 +101,7 @@ def update_story(story: Story, remove_existing_image: bool, new_image_file):
 
         # Save new file and add new image to story
         if new_image_file:
-            story.upload_file = file_storage_service.save_file(file=new_image_file, upload_set=upload_set_photos)
+            story.upload_file = file_storage_service.save_file(file=new_image_file)
 
         # Save story to DB
         db_session.add(story)
@@ -121,7 +120,7 @@ def update_story(story: Story, remove_existing_image: bool, new_image_file):
     # Finally, delete the old image from the file system (do this last so we only delete when we know everything
     # else has succeeded)
     if old_upload_file_to_delete:
-        file_storage_service.delete_file(file=old_upload_file_to_delete, upload_set=upload_set_photos)
+        file_storage_service.delete_file(file=old_upload_file_to_delete)
 
 
 def delete_story(story_id: int):
@@ -135,7 +134,7 @@ def delete_story(story_id: int):
         story.categories = []
         db_session.delete(story)
         if upload_file:
-            file_storage_service.delete_file(file=upload_file, upload_set=upload_set_photos)
+            file_storage_service.delete_file(file=upload_file)
             db_session.delete(upload_file)
         db_session.commit()
     except Exception as exc:

@@ -13,20 +13,23 @@ import httplib2
 import requests
 from flask import Flask, flash, jsonify, make_response, redirect, render_template, request, \
     session as login_session, url_for
-from flask_uploads import IMAGES, UploadSet, configure_uploads
+from flask_uploads import configure_uploads
 from oauth2client.client import FlowExchangeError, OAuth2Credentials, flow_from_clientsecrets
 from werkzeug.exceptions import HTTPException, NotFound, default_exceptions
 
 from storytime import story_time_service
+from storytime.file_storage_service import upload_set_photos
 from storytime.sec_util import AuthProvider, LoginSessionKeys, csrf_protect, do_authorization, is_user_authenticated, \
     login_required, reset_user_session, store_user_session
 from storytime.story_time_db_init import Story, User
 from storytime.web_api import web_api
 
 # Auth
-GOOGLE_CLIENT_SECRETS_JSON = os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_google.json'))
+GOOGLE_CLIENT_SECRETS_JSON = os.path.join(
+    os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_google.json'))
 GOOGLE_CLIENT_ID = json.loads(open(GOOGLE_CLIENT_SECRETS_JSON, 'r').read())['web']['client_id']
-FACEBOOK_CLIENT_SECRETS_JSON = os.path.join(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_facebook.json'))
+FACEBOOK_CLIENT_SECRETS_JSON = os.path.join(
+    os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config/client_secrets_facebook.json'))
 FACEBOOK_APP_ID = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_id']
 FACEBOOK_APP_SECRET = json.loads(open(FACEBOOK_CLIENT_SECRETS_JSON, 'r').read())['web']['app_secret']
 
@@ -38,7 +41,6 @@ app.register_blueprint(web_api)
 # Setup File Handling with Flask & Flask-Uploads
 app.config['MAX_CONTENT_LENGTH'] = 512 * 1024  # 512 KB
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/img'
-upload_set_photos = UploadSet('photos', IMAGES)
 configure_uploads(app, upload_set_photos)
 
 

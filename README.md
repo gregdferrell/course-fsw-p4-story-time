@@ -27,7 +27,7 @@ I've used this project to further my learning with the following technologies: P
 
 ## Getting Started With Development
 ### Dependencies
-* Python 3.6.2
+* Python 3.5.2
 * flask==0.12.2
 * httplib2==0.10.3
 * oauth2client==4.1.2

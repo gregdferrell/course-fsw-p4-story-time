@@ -5,7 +5,8 @@
 
 import datetime
 import json
-import secrets
+import random
+import string
 
 import httplib2
 import requests
@@ -90,8 +91,9 @@ def index():
 
 @app.route('/login', methods=['GET'])
 def login():
-    # Create a secure, random CSRF token and store in session for later verification.
-    csrf_token = secrets.token_urlsafe(40)
+    # Create a state token to prevent request forgery.
+    # Store it in the session for later verification
+    csrf_token = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session[LoginSessionKeys.CSRF_TOKEN.value] = csrf_token
     return render_template('login.html', csrf_token=csrf_token)
 
@@ -116,7 +118,7 @@ def login_google():
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}'.format(access_token))
     h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET')[1])
+    result = json.loads(str(h.request(url, 'GET')[1], 'utf-8'))
 
     # If there was an error in the access token info, abort
     if result.get('error') is not None:
@@ -189,19 +191,19 @@ def login_facebook():
     result = h.request(url, 'GET')[1]
 
     # Use token to get user info from API
-    token_json = json.loads(result)
+    token_json = json.loads(str(result, 'utf-8'))
     token = token_json['access_token']
 
     url = 'https://graph.facebook.com/v2.12/me?access_token={}&fields=name,email,id'.format(token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    data_me = json.loads(result)
+    data_me = json.loads(str(result, 'utf-8'))
 
     # Get user picture
     url = 'https://graph.facebook.com/v2.12/me/picture?access_token={}&redirect=0&height=200&width=200'.format(token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    data_picture = json.loads(result)
+    data_picture = json.loads(str(result, 'utf-8'))
 
     facebook_id = data_me['id']
     username = data_me['name']

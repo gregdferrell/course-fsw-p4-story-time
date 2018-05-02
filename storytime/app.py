@@ -40,7 +40,8 @@ app.register_blueprint(web_api)
 
 # Setup File Handling with Flask & Flask-Uploads
 app.config['MAX_CONTENT_LENGTH'] = 512 * 1024  # 512 KB
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/img'
+app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(
+    os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/upload/img'))
 configure_uploads(app, upload_set_photos)
 
 

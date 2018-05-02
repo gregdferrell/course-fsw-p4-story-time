@@ -8,6 +8,14 @@ import json
 import httplib2
 import time
 
+if __name__ == "__main__" and __package__ is None:
+    from sys import path
+    from os.path import dirname as dir
+
+    path.append(dir(path[0]))
+    __package__ = "db"
+
+
 from storytime import story_time_service
 from storytime.story_time_db_init import Category, Story, User, db_session
 

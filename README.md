@@ -5,6 +5,10 @@ The app is named **Story Time**.
 
 I've used this project to further my learning with the following technologies: Python, Flask, Bootstrap, SQL Alchemy, Postgresql.
 
+## Demo
+
+View a live demo at [storytime.gregdferrell.com](http://storytime.gregdferrell.com).
+
 ## Usage & Screenshots
 
 ### Home Page

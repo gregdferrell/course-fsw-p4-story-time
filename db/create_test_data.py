@@ -68,7 +68,7 @@ def delete_and_recreate_test_data():
                               description='A story about children writing and sharing stories with each other ...',
                               story_text='<REPLACE>',
                               published=True, user_id=user_1,
-                              categories=[cat_funny, cat_animal, cat_scary, cat_musical, cat_nonfiction])
+                              categories=[cat_funny, cat_animal, cat_musical])
         story_initial_id = story_time_service.create_story(story_initial)
 
         # Update story text for each story from lipsum generator (every second so we don't hit server too hard)

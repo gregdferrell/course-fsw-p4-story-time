@@ -51,6 +51,11 @@
 </header>
 
 <main role="main" class="main-section">
+    {% if config['DEMO'] %}
+    <div class="alert alert-warning text-center" role="alert">
+        Note! This is a demo server and all data will be deleted and recreated daily!
+    </div>
+    {% endif %}
     {% block page_detail %}{% endblock %}
 </main>
 

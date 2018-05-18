@@ -422,6 +422,7 @@ def edit_story(story_id):
 
 # -------------------- MAIN
 if __name__ == '__main__':
+    app.config['DEMO'] = False
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.jinja_env.auto_reload = True

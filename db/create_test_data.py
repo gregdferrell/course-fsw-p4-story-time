@@ -4,9 +4,10 @@
 #
 
 import json
+import shutil
+import time
 
 import httplib2
-import time
 
 if __name__ == "__main__" and __package__ is None:
     from sys import path
@@ -15,9 +16,11 @@ if __name__ == "__main__" and __package__ is None:
     path.append(dir(path[0]))
     __package__ = "db"
 
-
 from storytime import story_time_service
 from storytime.story_time_db_init import Category, Story, User, db_session
+
+# TODO fill in
+APP_UPLOAD_DIR = None
 
 
 def delete_and_recreate_test_data():
@@ -50,22 +53,23 @@ def delete_and_recreate_test_data():
             Category(label='Animals', description='Stories about Animals'))
         cat_musical_id = story_time_service.create_category(
             Category(label='Musical', description='Musicals'))
-        cat_history_id = story_time_service.create_category(
+        cat_nonfiction_id = story_time_service.create_category(
             Category(label='Nonfiction', description='True Stories'))
         cat_scary = story_time_service.get_category_by_id(category_id=cat_scary_id)
         cat_funny = story_time_service.get_category_by_id(category_id=cat_funny_id)
         cat_animal = story_time_service.get_category_by_id(category_id=cat_animal_id)
         cat_musical = story_time_service.get_category_by_id(category_id=cat_musical_id)
-        cat_history = story_time_service.get_category_by_id(category_id=cat_history_id)
+        cat_nonfiction = story_time_service.get_category_by_id(category_id=cat_nonfiction_id)
         num_rows_created = db_session.query(Category).count()
         print('Created {} categories'.format(num_rows_created))
 
         # Stories
-        story_initial = Story(title='Story Time', description='A story about children writing and sharing stories with each other ...',
-                          story_text='<REPLACE>',
-                          published=True, user_id=user_1,
-                          categories=[cat_funny, cat_animal])
-        story_zoo_id = story_time_service.create_story(story_initial)
+        story_initial = Story(title='Story Time',
+                              description='A story about children writing and sharing stories with each other ...',
+                              story_text='<REPLACE>',
+                              published=True, user_id=user_1,
+                              categories=[cat_funny, cat_animal, cat_scary, cat_musical, cat_nonfiction])
+        story_initial_id = story_time_service.create_story(story_initial)
 
         # Update story text for each story from lipsum generator (every second so we don't hit server too hard)
         url = 'https://lipsum.com/feed/json?what=paras&amount=5&start=yes'
@@ -87,5 +91,20 @@ def delete_and_recreate_test_data():
         db_session.rollback()
 
 
+def delete_app_uploads_dir():
+    if APP_UPLOAD_DIR:
+        try:
+            shutil.rmtree(APP_UPLOAD_DIR)
+            print('Deleted app uploads directory')
+        except FileNotFoundError as fnfe:
+            print('Did not delete app uploads dir: dir not found')
+        except Exception as exc:
+            print('Error deleting app uploads dir:')
+            print(exc)
+    else:
+        print('App uploads dir not configured: not deleting anything')
+
+
 if __name__ == '__main__':
     delete_and_recreate_test_data()
+    delete_app_uploads_dir()

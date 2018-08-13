@@ -1,5 +1,5 @@
 # Story Time - Udacity Full Stack Web Developer Project 4
-The item catalog project is the fourth project in the Udacity Full Stack Web Developer nano-degree.
+The item catalog project is the fourth project in the Udacity Nanodegree: Full Stack Web Developer.
 
 The app is named **Story Time**.
 
